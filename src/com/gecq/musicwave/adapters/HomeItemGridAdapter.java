@@ -7,8 +7,11 @@ import com.gecq.musicwave.R;
 import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.frames.AllMusicFragment;
 import com.gecq.musicwave.frames.HomeFragment;
+import com.gecq.musicwave.frames.MusicWaveFragment;
+import com.gecq.musicwave.frames.ScanFragment;
 import com.gecq.musicwave.models.HomeGridItem;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.annotation.SuppressLint;
@@ -20,13 +23,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class HomeItemGridAdapter extends BaseAdapter implements OnItemClickListener {
+public class HomeItemGridAdapter extends BaseAdapter implements
+		OnItemClickListener {
 	List<HomeGridItem> items;
-    HomeFragment home;
+	HomeFragment home;
+
 	public HomeItemGridAdapter(HomeFragment home) {
-		this.home=home;
+		this.home = home;
 		getItems();
 	}
+
 	@Override
 	public int getCount() {
 		return items.size();
@@ -45,55 +51,48 @@ public class HomeItemGridAdapter extends BaseAdapter implements OnItemClickListe
 	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View cv, ViewGroup parent) {
-		if(cv==null){
-			cv=LayoutInflater.from(home.getActivity()).inflate(R.layout.home_grid_menu_item, null);
+		if (cv == null) {
+			cv = LayoutInflater.from(home.getActivity()).inflate(
+					R.layout.home_grid_menu_item, null);
 		}
-		TextView icon=(TextView)cv.findViewById(R.id.home_item_icon);
-		HomeGridItem item=items.get(position);
+		TextView icon = (TextView) cv.findViewById(R.id.home_item_icon);
+		HomeGridItem item = items.get(position);
 		icon.setTypeface(MusicWaveActivity.icon);
 		icon.setText(item.getIcon());
-		TextView descrip=(TextView)cv.findViewById(R.id.home_item_name);
+		TextView descrip = (TextView) cv.findViewById(R.id.home_item_name);
 		descrip.setText(item.getName());
 		return cv;
 	}
-	
-	private List<HomeGridItem> getItems(){
-		if(items==null){
-			items=new ArrayList<HomeGridItem>();
+
+	private List<HomeGridItem> getItems() {
+		if (items == null) {
+			items = new ArrayList<HomeGridItem>();
 		}
-		items.add(new HomeGridItem("全部歌曲", "a", HomeGridItem.HOME_MENU_ALL));
-		items.add(new HomeGridItem("最近听过", "r", HomeGridItem.HOME_MENU_RECENT));
-		items.add(new HomeGridItem("我的歌单", "m", HomeGridItem.HOME_MENU_PLAYLIST));
-		items.add(new HomeGridItem("音效", "e", HomeGridItem.HOME_MENU_EFFECTS));
-		items.add(new HomeGridItem("扫描歌曲", "c", HomeGridItem.HOME_MENU_SCAN));
-		items.add(new HomeGridItem("设置", "d", HomeGridItem.HOME_MENU_SETTING));
+		items.add(new HomeGridItem("全部歌曲", "a", new AllMusicFragment(home)));
+		items.add(new HomeGridItem("最近听过", "r", null));
+		items.add(new HomeGridItem("我的歌单", "m", null));
+		items.add(new HomeGridItem("音效", "e", null));
+		items.add(new HomeGridItem("扫描歌曲", "c", new ScanFragment(home)));
+		items.add(new HomeGridItem("设置", "d", null));
 		return items;
 	}
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		HomeGridItem item=items.get(position);
-        final FragmentManager fragmentManager = home.getActivity().getSupportFragmentManager();
-        final FragmentTransaction transaction = fragmentManager.beginTransaction();
-        switch (item.getAction()){
-            case HomeGridItem.HOME_MENU_ALL:
-                toAllFrame(transaction);
-                break;
-            case HomeGridItem.HOME_MENU_SCAN:
-            	break;
-        }
-
+		HomeGridItem item = items.get(position);
+		Fragment to = item.getTo();
+		if (to != null) {
+			final FragmentManager fragmentManager = home.getActivity()
+					.getSupportFragmentManager();
+			final FragmentTransaction transaction = fragmentManager
+					.beginTransaction();
+			transaction.setCustomAnimations(R.animator.side_in_left,
+					R.animator.side_out_right);
+			MusicWaveFragment mwf=item.getTo();
+			transaction.replace(R.id.home_content, mwf);
+			MusicWaveActivity.currentFrame=mwf.getType();
+			transaction.commit();
+		}
 	}
-
-    private void toAllFrame(final FragmentTransaction transaction){
-        AllMusicFragment amf=new AllMusicFragment(home);
-        transaction.setCustomAnimations(R.animator.side_in_left, R.animator.side_out_right);
-        transaction.replace(R.id.home_content,amf);
-        transaction.commit();
-    }
-    
-    private void toScanFrame(){
-    	
-    }
-
 }

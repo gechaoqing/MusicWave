@@ -16,5 +16,14 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="scrollBarTheme" parent="AppTheme">
+        <item name="android:scrollbarSize">3dip</item>
+        <!-- <item name="android:scrollbarTrackVertical">@drawable/scroll_track</item> -->
+      <!--   <item name="android:scrollbarTrackHorizontal">@drawable/scroll_track</item> -->
+        <item name="android:scrollbarThumbVertical">@drawable/scroll_thumb</item>
+        <item name="android:scrollbarThumbHorizontal">@drawable/scroll_thumb</item> 
+        
+    </style>
 
 </resources>

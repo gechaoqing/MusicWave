@@ -14,6 +14,7 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.*;
 import android.content.Context;
@@ -35,6 +36,8 @@ public class MusicWaveActivity extends FragmentActivity {
     public static final int UPDATE_ALBUM=5;
     private ImageView album;
     private ProgressBar pbar;
+    private HomeFragment home;
+    public static int currentFrame;
     private void readFont(Context context)
 	{
 		if(icon == null){
@@ -57,10 +60,11 @@ public class MusicWaveActivity extends FragmentActivity {
     }
 
     private void setHomeFrame(){
-        HomeFragment hf=new HomeFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.home_content, hf);
+        home=new HomeFragment();
+        currentFrame=0;
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.home_content, home);
         fragmentTransaction.commit();
     }
 	
@@ -88,8 +92,26 @@ public class MusicWaveActivity extends FragmentActivity {
         setHomeFrame();
 	}
 
-    private void newHandler(){
-        hand=new Handler(Looper.getMainLooper()){
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	if(keyCode==KeyEvent.KEYCODE_BACK&&event.getRepeatCount()==0){
+    		if(currentFrame!=0){
+    			 final FragmentManager fragmentManager =getSupportFragmentManager();
+                 final FragmentTransaction transaction = fragmentManager.beginTransaction();
+                 transaction.setCustomAnimations(R.animator.side_in_left,R.animator.side_out_right);
+                 transaction.replace(R.id.home_content,home);
+                 currentFrame=0;
+                 transaction.commit();
+    		}else{
+    			finish();
+    		}
+    	}
+		return false;
+	}
+    
+    
+	private void newHandler(){
+        hand=new Handler(Looper.myLooper()){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);

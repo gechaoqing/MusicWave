@@ -33,4 +33,6 @@ public class HomeFragment extends Fragment {
         favourite.setTypeface(MusicWaveActivity.icon);
         return home;
     }
+    
+    
 }

@@ -1,6 +1,7 @@
 package com.gecq.musicwave.models;
 
-import android.support.v4.app.Fragment;
+import com.gecq.musicwave.frames.MusicWaveFragment;
+
 
 public class HomeGridItem {
 	public static final int HOME_MENU_ALL = 1;
@@ -12,20 +13,19 @@ public class HomeGridItem {
 	private String name;
 	private String icon;
 	private int action;
-	private Fragment to;
+	private MusicWaveFragment to;
 
-	public HomeGridItem(String name, String icon, int action,Fragment to) {
+	public HomeGridItem(String name, String icon,MusicWaveFragment to) {
 		this.name = name;
 		this.icon = icon;
-		this.action = action;
 		this.to=to;
 	}
 
-	public Fragment getTo() {
+	public MusicWaveFragment getTo() {
 		return to;
 	}
 
-	public void setTo(Fragment to) {
+	public void setTo(MusicWaveFragment to) {
 		this.to = to;
 	}
 

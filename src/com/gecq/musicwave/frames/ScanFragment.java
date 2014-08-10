@@ -1,6 +1,5 @@
 package com.gecq.musicwave.frames;
 
-
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.models.HomeGridItem;
@@ -15,18 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-/**
- * Created by chaoqing on 14-8-8.
- */
-public class AllMusicFragment extends MusicWaveFragment {
-    public AllMusicFragment(HomeFragment home) {
-		super(home);
-	}
-	@SuppressLint("InflateParams")
+public class ScanFragment extends MusicWaveFragment {
+    public ScanFragment(HomeFragment home){
+        super(home);
+    }
+    @SuppressLint("InflateParams")
 	@Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View all= inflater.inflate(R.layout.all_music_main,null,false);
-        Button backHome=(Button)all.findViewById(R.id.all_music_back);
+        View all= inflater.inflate(R.layout.scan_frame,null,false);
+        Button backHome=(Button)all.findViewById(R.id.scan_back);
         backHome.setTypeface(MusicWaveActivity.icon);
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +39,7 @@ public class AllMusicFragment extends MusicWaveFragment {
     }
 	@Override
 	public int getType() {
-		return HomeGridItem.HOME_MENU_ALL;
+		return HomeGridItem.HOME_MENU_SCAN;
 	}
+    
 }
