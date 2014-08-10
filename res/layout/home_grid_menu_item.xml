@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.gecq.geplayer.ui.HomeItemsLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" 
+    android:background="@drawable/home_item_selector"
+    >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" 
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/home_item_icon"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" 
+            android:textSize="40sp"
+            android:gravity="center"
+            android:textColor="#88555555"
+            />
+
+        <TextView
+            android:id="@+id/home_item_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" 
+             android:gravity="center"
+             android:textColor="#88555555"
+             android:layout_marginTop="5dp"
+            />
+    </LinearLayout>
+
+</com.gecq.geplayer.ui.HomeItemsLayout>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:id="@+id/home_add_play_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/home_list_menu_addplaylist_selector"
+        android:clickable="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/home_add_play_list_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="@string/icon_add_play_list"
+            android:textColor="#88555555"
+            android:textSize="34sp" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:background="#bbbbbb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:text="@string/add_play_list"
+            android:textColor="#88555555"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/home_favourite"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/home_list_menu_favourite_selector"
+        android:clickable="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/home_favourite_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="@string/icon_favourite"
+            android:textColor="#88555555"
+            android:textSize="34sp" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:background="#bbbbbb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="10dp"
+            android:text="@string/favourite_str"
+            android:textColor="#88555555"
+            android:textSize="16sp" />
+    </LinearLayout>
+    
+
+</LinearLayout>

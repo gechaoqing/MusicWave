@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gray">#999999</color>
+
+    <color name="list_item_pressed">#58ACFA</color>
+    <color name="list_item_selected">#ff239dfc</color>
+    <color name="list_item_default">#ff000000</color>
+    <color name="list_item_divider">#88239dfc</color>
+
+    <color name="play_progress_bar_back">#001D3F54</color>
+    <color name="play_progress_bar_sec">#443E8FC2</color>
+    <color name="play_progress">#4457B2EB</color>
+
+    <color name="player_controller_button_pressed_bak">#AA32ACD1</color>
+
+    <color name="button_style_pressed">#ff156aab</color>
+    <color name="button_style_focused">#ff155a98</color>
+    <color name="button_style">#ff1c91f4</color>
+    
+    <color name="setting_item_selected">#88097EBD</color>
+    <color name="setting_item_no_selected">#44000000</color>
+    
+    <color name="home_item_click">#66e0f7fa</color>
+    <color name="home_list_menu_click">#66e0f7fa</color>
+    <color name="home_item_default">#cccccc</color>
+    
+    <color name="home_grid_menu">#88bbbbbb</color>
+
+    <color name="btn_bg_pressed">#AA32ACD1</color>
+    
+</resources>

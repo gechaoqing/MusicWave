@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- 设置背景色图像资源 -->
+    <item
+        android:id="@android:id/background">
+        <clip >
+            <shape>
+                <solid android:color="@color/play_progress_bar_back"/>
+            </shape>
+        </clip>
+        </item>
+    <!-- 设置第二级进度条颜色图像资源 -->
+    <item
+        android:id="@android:id/secondaryProgress">
+        <clip >
+            <shape>
+                <solid android:color="@color/play_progress_bar_sec"/>
+            </shape>
+        </clip>
+        </item>
+    <!-- 设置第一级进度条颜色图像资源 -->
+    <item
+        android:id="@android:id/progress">
+        <clip >
+            <shape>
+                <solid android:color="@color/play_progress"/>
+            </shape>
+        </clip>
+        </item>
+
+</layer-list>
