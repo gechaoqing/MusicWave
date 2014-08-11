@@ -1,6 +1,7 @@
 package com.gecq.musicwave.player;
 
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,7 @@ public class PlayerManager implements Runnable {
 		return pm;
 	}
 
-	public boolean playNew(Mp3 mp3) {
-		Message msg = MusicWaveActivity.hand
-				.obtainMessage(MusicWaveActivity.PLAY_NEW);
+	public boolean playNew(final Mp3 mp3) {
 		status = 1;
 		if (!playList.contains(mp3)) {
 			playList.add(mp3);
@@ -54,10 +53,16 @@ public class PlayerManager implements Runnable {
 		} else {
 			position = playList.indexOf(mp3);
 		}
-		boolean p = play(mp3.getFileName());
-		msg.obj = mp3;
-		msg.arg1 = player.getDuration();
-		msg.sendToTarget();
+		boolean p = play(mp3.getFileName(),new Prepared() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+				Message msg = MusicWaveActivity.hand
+						.obtainMessage(MusicWaveActivity.PLAY_NEW);
+				msg.obj = mp3;
+				msg.arg1 = mp.getDuration();
+				msg.sendToTarget();
+			}
+		});
 		return p;
 	}
 
@@ -83,7 +88,7 @@ public class PlayerManager implements Runnable {
 	}
 
 	public boolean play(Mp3 mp3) {
-		return play(mp3.getFileName());
+		return play(mp3.getFileName(),null);
 	}
 
 	public void play() {
@@ -112,17 +117,15 @@ public class PlayerManager implements Runnable {
 			}
 			progress=null;
 		}
-			
 	}
 
-	public boolean play(String fileName) {
+	public boolean play(String fileName,final Prepared pre) {
 		try {
 			currentSource = fileName;
 			player.reset();
 			player.setDataSource(fileName);
 			player.prepare();
 			player.start();
-			startProgress();
 			player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 				@Override
 				public void onCompletion(MediaPlayer mediaPlayer) {
@@ -132,10 +135,22 @@ public class PlayerManager implements Runnable {
 					playNext();
 				}
 			});
+			player.setOnPreparedListener(new OnPreparedListener() {
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					startProgress();
+					if(pre!=null)
+					 pre.onPrepared(mp);
+				}
+			});
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	interface Prepared{
+		void onPrepared(MediaPlayer mp);
 	}
 
 	public void playNext() {
@@ -168,6 +183,7 @@ public class PlayerManager implements Runnable {
 
 	private void playStop() {
 		status = 0;
+		player.reset();
 		player.stop();
 		player.release();
 		player = null;
