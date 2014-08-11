@@ -1,14 +1,11 @@
 package com.gecq.musicwave.adapters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.activity.MusicWaveActivity;
-import com.gecq.musicwave.frames.AllMusicFragment;
 import com.gecq.musicwave.frames.HomeFragment;
 import com.gecq.musicwave.frames.MusicWaveFragment;
-import com.gecq.musicwave.frames.ScanFragment;
 import com.gecq.musicwave.models.HomeGridItem;
 
 import android.support.v4.app.Fragment;
@@ -25,12 +22,12 @@ import android.widget.TextView;
 
 public class HomeItemGridAdapter extends BaseAdapter implements
 		OnItemClickListener {
-	List<HomeGridItem> items;
-	HomeFragment home;
+	private List<HomeGridItem> items;
+	private HomeFragment home;
 
 	public HomeItemGridAdapter(HomeFragment home) {
 		this.home = home;
-		getItems();
+		this.items=home.getItems();
 	}
 
 	@Override
@@ -64,18 +61,6 @@ public class HomeItemGridAdapter extends BaseAdapter implements
 		return cv;
 	}
 
-	private List<HomeGridItem> getItems() {
-		if (items == null) {
-			items = new ArrayList<HomeGridItem>();
-		}
-		items.add(new HomeGridItem("全部歌曲", "a", new AllMusicFragment(home)));
-		items.add(new HomeGridItem("最近听过", "r", null));
-		items.add(new HomeGridItem("我的歌单", "m", null));
-		items.add(new HomeGridItem("音效", "e", null));
-		items.add(new HomeGridItem("扫描歌曲", "c", new ScanFragment(home)));
-		items.add(new HomeGridItem("设置", "d", null));
-		return items;
-	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,

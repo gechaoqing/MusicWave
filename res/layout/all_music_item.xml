@@ -7,29 +7,38 @@
     <TextView
         android:id="@+id/all_music_num"
         android:layout_width="40dp"
+        android:gravity="center"
         android:layout_height="fill_parent" />
 
     <View
         android:layout_width="1px"
         android:layout_height="fill_parent"
-        android:background="#bbbbbb" />
+        android:background="#88999999" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+        android:padding="5dp"
+        >
 
         <TextView
             android:id="@+id/all_music_song_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textSize="14sp" 
+            android:lines="1"
+            android:ellipsize="end"
+            />
 
         <TextView
             android:id="@+id/all_music_song_singer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp" />
+            android:textSize="12sp" 
+            android:lines="1"
+            android:ellipsize="end"
+            />
     </LinearLayout>
 
 </LinearLayout>

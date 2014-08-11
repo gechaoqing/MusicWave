@@ -36,18 +36,51 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical" 
-        android:padding="10dp"
-        >
+        android:orientation="vertical"
+        android:padding="10dp" >
 
-        <Button 
+        <Button
+            android:id="@+id/scan_start"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:background="@drawable/button_style"
+            android:padding="5dp"
             android:text="@string/scan_music_start"
-            android:textColor="#ffffff"
-            />
+            android:textColor="#ffffff" />
+
+        <LinearLayout
+            android:id="@+id/scan_current"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style_shape"
+            android:orientation="horizontal"
+            android:visibility="gone" 
+            android:padding="10dp"
+            >
+            <TextView
+                android:id="@+id/scan_current_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:ellipsize="end"
+                android:lines="1"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                />
+            <View 
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:background="#88ffffff"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                />
+            <TextView
+                android:id="@+id/scan_current_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="#ffffff" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

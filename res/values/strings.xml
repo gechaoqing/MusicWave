@@ -17,6 +17,7 @@
     <string name="icon_back_home">g</string>
 
     <string name="all_music">全部歌曲</string>
+    <string name="all_music_empty">还没有歌曲，去扫描吧</string>
     
     <string name="scan_music">歌曲扫描</string>
     <string name="scan_music_start">开始扫描歌曲</string>

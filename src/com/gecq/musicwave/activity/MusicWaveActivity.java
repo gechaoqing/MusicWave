@@ -5,9 +5,9 @@ import com.gecq.musicwave.database.DBManager;
 import com.gecq.musicwave.formats.Mp3;
 import com.gecq.musicwave.frames.HomeFragment;
 import com.gecq.musicwave.player.PlayerManager;
+import com.gecq.musicwave.utils.ArtWork;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -129,12 +129,11 @@ public class MusicWaveActivity extends FragmentActivity {
                         psinger.setText(mp3.getArtist());
                         pbar.setMax(msg.arg1);
                         pbar.setProgress(0);
-                        if(mp3.getAlbumImage()!=null)
+                        if(mp3.getAlbumArt()==null)
                         {
-                            Bitmap bm = BitmapFactory.decodeByteArray(mp3.getAlbumImage(), 0, mp3.getAlbumImage().length);
-                            album.setImageBitmap(bm);
+                            new ArtWork.AsyncWork(MusicWaveActivity.this,mp3).execute(0);
                         }else{
-                            album.setImageResource(R.drawable.home_play_bar_default_album);
+                            album.setImageBitmap(mp3.getAlbumArt());
                         }
                         break;
                     case UPDATE_PROGRESS:
@@ -142,16 +141,17 @@ public class MusicWaveActivity extends FragmentActivity {
                         break;
                     case PLAY_COMPLETE:
                         play.setText(R.string.icon_play);
-                        psong.setText("只有更音乐");
-                        psinger.setText("更音乐");
+                        psong.setText("我的音乐");
+                        psinger.setText("乐浪");
                         pbar.setMax(100);
                         pbar.setProgress(0);
                         break;
                     case UPDATE_ALBUM:
-                        byte[] data=(byte[])msg.obj;
+                    	Bitmap data=(Bitmap)msg.obj;
                         if(data!=null){
-                            Bitmap bm = BitmapFactory.decodeByteArray(data, 0,data.length);
-                            album.setImageBitmap(bm);
+                            album.setImageBitmap(data);
+                        }else{
+                        	album.setImageResource(R.drawable.home_play_bar_default_album);
                         }
                         break;
                 }

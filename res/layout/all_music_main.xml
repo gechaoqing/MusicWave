@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
     <LinearLayout
-            android:id="@+id/home_title"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:background="@color/cyan_700"
-            android:orientation="horizontal" >
+        android:id="@+id/home_title"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/cyan_700"
+        android:orientation="horizontal" >
 
         <Button
-                android:id="@+id/all_music_back"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_bg"
-                android:gravity="center"
-                android:minWidth="50dp"
-                android:textColor="#ffffff"
-                android:textSize="18sp"
-                android:text="@string/icon_back_home" />
+            android:id="@+id/all_music_back"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:minWidth="50dp"
+            android:text="@string/icon_back_home"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="2dp"
-                android:text="@string/all_music"
-                android:textColor="#ffffff" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:text="@string/all_music"
+            android:textColor="#ffffff" />
     </LinearLayout>
-    <ListView android:id="@+id/all_music_list" android:layout_width="fill_parent" android:layout_height="match_parent"/>
+
+    <ListView
+        android:id="@+id/all_music_list"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" 
+        android:divider="#88999999"
+        android:dividerHeight="1px"
+        />
+
+    <TextView
+        android:id="@+id/all_music_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="#999999" />
+
 </LinearLayout>

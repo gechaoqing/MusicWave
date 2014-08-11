@@ -7,9 +7,9 @@
     <color name="list_item_default">#ff000000</color>
     <color name="list_item_divider">#88239dfc</color>
 
-    <color name="play_progress_bar_back">#001D3F54</color>
+    <color name="play_progress_bar_back">#00000000</color>
     <color name="play_progress_bar_sec">#443E8FC2</color>
-    <color name="play_progress">#4457B2EB</color>
+    <color name="play_progress">#440097a7</color>
 
     <color name="player_controller_button_pressed_bak">#AA32ACD1</color>
 

@@ -3,10 +3,6 @@ package com.gecq.musicwave.database;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
 import com.gecq.musicwave.formats.Mp3;
 
 import android.content.Context;
@@ -205,6 +201,8 @@ public class DBManager {
         c.close();
         return has;
     }
+    
+    
 
 
 }

@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import android.graphics.Bitmap;
+
 import com.gecq.musicwave.formats.jmp.BuffRandAcceFile;
 import com.gecq.musicwave.formats.jmp.ID3Tag;
 import com.gecq.musicwave.formats.mp3.ID3v1;
@@ -21,7 +23,7 @@ public class Mp3 implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private boolean hasDecodeAlbum=false;
-	private Integer id;
+	private long id;
 	private final String UNKNOWN = "未知";
 	private double size;
 	private String name;// 歌曲名
@@ -34,6 +36,10 @@ public class Mp3 implements Serializable {
 	private String genreDescrib;
 	private byte[] albumImage;
 	private String fileName;
+	
+	private long albumId;
+	
+	private Bitmap albumArt;
 
 	public Mp3(String fileName, boolean decode) {
 		this(fileName);
@@ -202,11 +208,11 @@ public class Mp3 implements Serializable {
 		this.albumImage = albumImage;
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -234,4 +240,21 @@ public class Mp3 implements Serializable {
 	public void setHasDecodeAlbum(boolean hasDecodeAlbum) {
 		this.hasDecodeAlbum = hasDecodeAlbum;
 	}
+
+	public long getAlbumId() {
+		return albumId;
+	}
+
+	public void setAlbumId(long albumId) {
+		this.albumId = albumId;
+	}
+
+	public Bitmap getAlbumArt() {
+		return albumArt;
+	}
+
+	public void setAlbumArt(Bitmap albumArt) {
+		this.albumArt = albumArt;
+	}
+
 }
