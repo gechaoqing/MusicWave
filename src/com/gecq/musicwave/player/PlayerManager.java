@@ -1,6 +1,8 @@
 package com.gecq.musicwave.player;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 
 import java.util.ArrayList;
@@ -53,12 +55,17 @@ public class PlayerManager implements Runnable {
 		} else {
 			position = playList.indexOf(mp3);
 		}
-		boolean p = play(mp3.getFileName(),new Prepared() {
+		if(player.isPlaying())
+		{
+			player.stop();
+		}
+		boolean p = play(mp3.getFileName(), new Prepared() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 				Message msg = MusicWaveActivity.hand
 						.obtainMessage(MusicWaveActivity.PLAY_NEW);
 				msg.obj = mp3;
+				System.out.println(mp.getDuration()+" =================");
 				msg.arg1 = mp.getDuration();
 				msg.sendToTarget();
 			}
@@ -88,7 +95,7 @@ public class PlayerManager implements Runnable {
 	}
 
 	public boolean play(Mp3 mp3) {
-		return play(mp3.getFileName(),null);
+		return play(mp3.getFileName(), null);
 	}
 
 	public void play() {
@@ -108,24 +115,24 @@ public class PlayerManager implements Runnable {
 	}
 
 	private void stopProgress() {
-		if (progress != null){
+		if (progress != null) {
 			try {
 				progress.interrupt();
 				progress.join();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			progress=null;
+			progress = null;
 		}
 	}
 
-	public boolean play(String fileName,final Prepared pre) {
+	public boolean play(String fileName, final Prepared pre) {
 		try {
 			currentSource = fileName;
+			player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			player.reset();
 			player.setDataSource(fileName);
-			player.prepare();
-			player.start();
+			player.prepareAsync();
 			player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 				@Override
 				public void onCompletion(MediaPlayer mediaPlayer) {
@@ -135,12 +142,22 @@ public class PlayerManager implements Runnable {
 					playNext();
 				}
 			});
+			player.setOnErrorListener(new OnErrorListener() {
+				@Override
+				public boolean onError(MediaPlayer mp, int what, int extra) {
+					System.out.println("what:"+what+" extra:"+extra+" !!!!!!!!!!!!!!!!!!");
+					return false;
+				}
+			});
 			player.setOnPreparedListener(new OnPreparedListener() {
 				@Override
 				public void onPrepared(MediaPlayer mp) {
+					mp.start();
 					startProgress();
-					if(pre!=null)
-					 pre.onPrepared(mp);
+					if (pre != null)
+					{
+					   pre.onPrepared(mp);
+					}
 				}
 			});
 			return true;
@@ -148,8 +165,8 @@ public class PlayerManager implements Runnable {
 			return false;
 		}
 	}
-	
-	interface Prepared{
+
+	interface Prepared {
 		void onPrepared(MediaPlayer mp);
 	}
 
@@ -183,10 +200,10 @@ public class PlayerManager implements Runnable {
 
 	private void playStop() {
 		status = 0;
-		player.reset();
 		player.stop();
+		player.reset();
 		player.release();
-		player = null;
+//		player = null;
 	}
 
 	@Override

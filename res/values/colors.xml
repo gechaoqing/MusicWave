@@ -28,4 +28,7 @@
 
     <color name="btn_bg_pressed">#AA32ACD1</color>
     
+    <color name="all_music_selected_num_bg">#4400bcd4</color>
+    <color name="all_music_num_bg">#000097a7</color>
+    
 </resources>
