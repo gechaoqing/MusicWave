@@ -3,22 +3,20 @@
     <string name="app_name">乐浪</string>
     <string name="app_string">乐浪-我的音乐</string>
     <string name="singer_img">播放歌曲图片</string>
-    
-    <string name="icon_play">A</string>
-    <string name="icon_pause">C</string>
-    <string name="icon_next">B</string>
-    <string name="icon_setting_check">D</string>
-    <string name="icon_add_play_list">b</string>
     <string name="add_play_list">新建歌单</string>
-    
-     <string name="icon_favourite">f</string>
     <string name="favourite_str">我的最爱</string>
-
-    <string name="icon_back_home">g</string>
-
     <string name="all_music">全部歌曲</string>
     <string name="all_music_empty">还没有歌曲，去扫描吧</string>
-    
     <string name="scan_music">歌曲扫描</string>
     <string name="scan_music_start">开始扫描歌曲</string>
+    <string name="accessibility_play">播放</string>
+    <string name="accessibility_pause">暂停</string>
+    <string name="accessibility_next">下一首</string>
+    <string name="accessibility_prev">前一首</string>
+    <string name="accessibility_shuffle">随机播放</string>
+    <string name="accessibility_shuffle_all">全部随机播放</string>
+    <string name="accessibility_repeat">重复播放</string>
+    <string name="accessibility_repeat_all">全部重复播放</string>
+    <string name="accessibility_repeat_one">单曲重复播放</string>
+
 </resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="icon_play">A</string>
+    <string name="icon_pause">C</string>
+    <string name="icon_next">B</string>
+    <string name="icon_setting_check">D</string>
+    <string name="icon_add_play_list">b</string>
+    <string name="icon_back_home">g</string>
+    <string name="icon_favourite">f</string>
+    <string name="icon_play_repeat_all">a</string>
+    <string name="icon_play_repeat_current">d</string>
+    <string name="icon_play_repeat_none">e</string>
+    <string name="icon_play_shuffle">h</string>
+    <string name="icon_play_shuffle_all">i</string>
+
+</resources>

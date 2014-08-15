@@ -1,40 +1,57 @@
 package com.gecq.musicwave.activity;
 
+import static com.gecq.musicwave.utils.MusicUtils.mService;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.database.DBManager;
 import com.gecq.musicwave.formats.Mp3;
 import com.gecq.musicwave.frames.HomeFragment;
+import com.gecq.musicwave.player.IMusicWaveService;
 import com.gecq.musicwave.player.PlayerManager;
+import com.gecq.musicwave.player.PlayerService;
+import com.gecq.musicwave.ui.PlayNextButton;
+import com.gecq.musicwave.ui.PlayPauseButton;
+import com.gecq.musicwave.ui.RepeatButton;
+import com.gecq.musicwave.ui.ShuffleButton;
 import com.gecq.musicwave.utils.ArtWork;
+import com.gecq.musicwave.utils.Lists;
+import com.gecq.musicwave.utils.MusicUtils;
+import com.gecq.musicwave.utils.MusicUtils.ServiceToken;
 
-import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.*;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Window;
 
-public class MusicWaveActivity extends FragmentActivity {
+public class MusicWaveActivity extends FragmentActivity  implements ServiceConnection{
 	public static Typeface icon;
-	private Button play,next;
-    private TextView psong, psinger;
     public static Handler hand;
-    public static DBManager dbm;
     public static final int PLAY_NEW=1;
     public static final int PAUSE=0;
     public static final int PAUSE_PLAY=2;
     public static final int UPDATE_PROGRESS=3;
     public static final int PLAY_COMPLETE=4;
     public static final int UPDATE_ALBUM=5;
-    private ImageView album;
+    public static final int SET_PROGRESS_MAX=6;
     private ProgressBar pbar;
     private HomeFragment home;
     public static int currentFrame;
@@ -55,6 +72,12 @@ public class MusicWaveActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.home);
 		readFont(MusicWaveActivity.this);
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		mToken = MusicUtils.bindToService(this, this);
+		// Initialize the broadcast receiver
+        mPlaybackStatus = new PlaybackStatus(this);
+        
 		initViews();
         newHandler();
     }
@@ -69,26 +92,13 @@ public class MusicWaveActivity extends FragmentActivity {
     }
 	
 	private void initViews(){
-		play=(Button)findViewById(R.id.home_play);
-		play.setTypeface(icon);
-		next=(Button)findViewById(R.id.home_play_next);
+		mPlayPauseButton=(PlayPauseButton)findViewById(R.id.home_play);
+		next=(PlayNextButton)findViewById(R.id.home_play_next);
 		next.setTypeface(icon);
-        psong=(TextView)findViewById(R.id.home_song_name);
-        psinger=(TextView)findViewById(R.id.home_song_singer);
+		mTrackName=(TextView)findViewById(R.id.home_song_name);
+		mArtistName=(TextView)findViewById(R.id.home_song_singer);
         pbar=(ProgressBar)findViewById(R.id.home_play_progress);
-        album=(ImageView)findViewById(R.id.home_album);
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlayerManager.getInstance().play();
-            }
-        });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PlayerManager.getInstance().playNext();
-            }
-        });
+        mAlbumArt=(ImageView)findViewById(R.id.home_album);
         setHomeFrame();
 	}
 
@@ -109,6 +119,205 @@ public class MusicWaveActivity extends FragmentActivity {
 		return false;
 	}
     
+    /**
+     * Playstate and meta change listener
+     */
+    private final ArrayList<MusicStateListener> mMusicStateListener = Lists.newArrayList();
+
+    /**
+     * The service token
+     */
+    private ServiceToken mToken;
+    
+    private PlayNextButton next;
+
+    /**
+     * Play and pause button (BAB)
+     */
+    private PlayPauseButton mPlayPauseButton;
+
+    /**
+     * Repeat button (BAB)
+     */
+    private RepeatButton mRepeatButton;
+
+    /**
+     * Shuffle button (BAB)
+     */
+    private ShuffleButton mShuffleButton;
+
+    /**
+     * Track name (BAB)
+     */
+    private TextView mTrackName;
+
+    /**
+     * Artist name (BAB)
+     */
+    private TextView mArtistName;
+
+    /**
+     * Album art (BAB)
+     */
+    private ImageView mAlbumArt;
+
+    /**
+     * Broadcast receiver
+     */
+    private PlaybackStatus mPlaybackStatus;
+    
+    /**
+     * Used to monitor the state of playback
+     */
+    private final static class PlaybackStatus extends BroadcastReceiver {
+
+        private final WeakReference<MusicWaveActivity> mReference;
+
+        /**
+         * Constructor of <code>PlaybackStatus</code>
+         */
+        public PlaybackStatus(final MusicWaveActivity activity) {
+            mReference = new WeakReference<MusicWaveActivity>(activity);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressLint("NewApi")
+		@Override
+        public void onReceive(final Context context, final Intent intent) {
+            final String action = intent.getAction();
+            if (action.equals(PlayerService.META_CHANGED)) {
+                // Current info
+                mReference.get().updateBottomActionBarInfo();
+                // Update the favorites icon
+                mReference.get().invalidateOptionsMenu();
+                // Let the listener know to the meta chnaged
+                for (final MusicStateListener listener : mReference.get().mMusicStateListener) {
+                    if (listener != null) {
+                        listener.onMetaChanged();
+                    }
+                }
+            } else if (action.equals(PlayerService.PLAYSTATE_CHANGED)) {
+                // Set the play and pause image
+                mReference.get().mPlayPauseButton.updateState();
+            } else if (action.equals(PlayerService.REPEATMODE_CHANGED)
+                    || action.equals(PlayerService.SHUFFLEMODE_CHANGED)) {
+                // Set the repeat image
+                mReference.get().mRepeatButton.updateRepeatState();
+                // Set the shuffle image
+                mReference.get().mShuffleButton.updateShuffleState();
+            } else if (action.equals(PlayerService.REFRESH)) {
+                // Let the listener know to update a list
+                for (final MusicStateListener listener : mReference.get().mMusicStateListener) {
+                    if (listener != null) {
+                        listener.restartLoader();
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Sets the track name, album name, and album art.
+     */
+    private void updateBottomActionBarInfo() {
+        // Set the track name
+        mTrackName.setText(MusicUtils.getTrackName());
+        // Set the artist name
+        mArtistName.setText(MusicUtils.getArtistName());
+        // Set the album art
+        mAlbumArt.setImageBitmap(ArtWork.getArtwork(this, MusicUtils.getCurrentAudioId(), MusicUtils.getCurrentAlbumId(), true));
+    }
+
+    /**
+     * Sets the correct drawable states for the playback controls.
+     */
+    private void updatePlaybackControls() {
+        // Set the play and pause image
+        mPlayPauseButton.updateState();
+        // Set the shuffle image
+        mShuffleButton.updateShuffleState();
+        // Set the repeat image
+        mRepeatButton.updateRepeatState();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressLint("NewApi")
+	@Override
+    public void onServiceConnected(final ComponentName name, final IBinder service) {
+        mService = IMusicWaveService.Stub.asInterface(service);
+        updatePlaybackControls();
+        // Current info
+        updateBottomActionBarInfo();
+        // Update the favorites icon
+        invalidateOptionsMenu();
+    }
+    
+    @Override
+    public void onServiceDisconnected(final ComponentName name) {
+        mService = null;
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unbind from the service
+        if (mToken != null) {
+            MusicUtils.unbindFromService(mToken);
+            mToken = null;
+        }
+
+        // Unregister the receiver
+        try {
+            unregisterReceiver(mPlaybackStatus);
+        } catch (final Throwable e) {
+            //$FALL-THROUGH$
+        }
+
+        // Remove any music status listeners
+        mMusicStateListener.clear();
+    }
+    
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        MusicUtils.notifyForegroundStateChanged(this, false);
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        final IntentFilter filter = new IntentFilter();
+        // Play and pause changes
+        filter.addAction(PlayerService.PLAYSTATE_CHANGED);
+        // Shuffle and repeat changes
+        filter.addAction(PlayerService.SHUFFLEMODE_CHANGED);
+        filter.addAction(PlayerService.REPEATMODE_CHANGED);
+        // Track changes
+        filter.addAction(PlayerService.META_CHANGED);
+        // Update a list, probably the playlist fragment's
+        filter.addAction(PlayerService.REFRESH);
+        registerReceiver(mPlaybackStatus, filter);
+        MusicUtils.notifyForegroundStateChanged(this, true);
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatePlaybackControls();
+        // Current info
+        updateBottomActionBarInfo();
+    }
+
+    
     
 	private void newHandler(){
         hand=new Handler(Looper.myLooper()){
@@ -116,44 +325,12 @@ public class MusicWaveActivity extends FragmentActivity {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what){
-                    case PAUSE:
-                        play.setText(R.string.icon_play);
-                        break;
-                    case PAUSE_PLAY:
-                        play.setText(R.string.icon_pause);
-                        break;
-                    case PLAY_NEW:
-                        Mp3 mp3=(Mp3)msg.obj;
-                        play.setText(R.string.icon_pause);
-                        psong.setText(mp3.getName());
-                        psinger.setText(mp3.getArtist());
-                        pbar.setMax(msg.arg1);
-                        pbar.setProgress(0);
-                        if(mp3.getAlbumArt()==null)
-                        {
-                            new ArtWork.AsyncWork(MusicWaveActivity.this,mp3).execute(0);
-                        }else{
-                            album.setImageBitmap(mp3.getAlbumArt());
-                        }
-                        break;
                     case UPDATE_PROGRESS:
                         pbar.setProgress(msg.arg1);
                         break;
-                    case PLAY_COMPLETE:
-                        play.setText(R.string.icon_play);
-                        psong.setText("我的音乐");
-                        psinger.setText("乐浪");
-                        pbar.setMax(100);
-                        pbar.setProgress(0);
-                        break;
-                    case UPDATE_ALBUM:
-                    	Bitmap data=(Bitmap)msg.obj;
-                        if(data!=null){
-                            album.setImageBitmap(data);
-                        }else{
-                        	album.setImageResource(R.drawable.home_play_bar_default_album);
-                        }
-                        break;
+                    case SET_PROGRESS_MAX:
+                    	pbar.setMax(msg.arg1);
+                    	break;
                 }
             }
         };
