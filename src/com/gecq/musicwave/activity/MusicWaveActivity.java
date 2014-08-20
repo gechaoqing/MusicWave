@@ -6,11 +6,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.database.DBManager;
-import com.gecq.musicwave.formats.Mp3;
 import com.gecq.musicwave.frames.HomeFragment;
 import com.gecq.musicwave.player.IMusicWaveService;
-import com.gecq.musicwave.player.PlayerManager;
 import com.gecq.musicwave.player.PlayerService;
 import com.gecq.musicwave.ui.PlayNextButton;
 import com.gecq.musicwave.ui.PlayPauseButton;

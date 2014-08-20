@@ -5,9 +5,12 @@ import java.util.List;
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.formats.Mp3;
 import com.gecq.musicwave.frames.AllMusicFragment;
+import com.gecq.musicwave.loaders.SongLoader;
 import com.gecq.musicwave.player.PlayerManager;
+import com.gecq.musicwave.utils.MusicUtils;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,8 +74,13 @@ public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		Mp3 mp3 = mp3s.get(position);
-		PlayerManager.getInstance().playNew(mp3);
+		Cursor cursor = SongLoader.makeSongCursor(frame.getActivity());
+        final long[] list = MusicUtils.getSongListForCursor(cursor);
+        MusicUtils.playAll(frame.getActivity(), list, position, false);
+        cursor.close();
+        cursor = null;
+//		Mp3 mp3 = mp3s.get(position);
+//		PlayerManager.getInstance().playNew(mp3);
 		int count = parent.getChildCount();
 		for (int i = 0; i < count; i++) {
 			View v = parent.getChildAt(i);
