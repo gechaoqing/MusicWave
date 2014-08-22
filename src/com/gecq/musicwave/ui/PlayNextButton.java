@@ -1,7 +1,6 @@
 package com.gecq.musicwave.ui;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.utils.CommonUtils;
 import com.gecq.musicwave.utils.MusicUtils;
 
@@ -20,7 +19,6 @@ public class PlayNextButton extends Button implements OnClickListener, OnLongCli
 		super(context, attrs);
         setOnClickListener(this);
         setOnLongClickListener(this);
-        setTypeface(MusicWaveActivity.icon);
         setContentDescription(getResources().getString(R.string.accessibility_next));
 	}
 

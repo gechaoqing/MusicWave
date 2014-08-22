@@ -115,7 +115,9 @@ public class SongLoader extends WrappedAsyncTaskLoader<List<Song>> {
                         /* 3 */
                         AudioColumns.ALBUM,
                         /* 4 */
-                        AudioColumns.DURATION
+                        AudioColumns.DURATION,
+                        /* 5 */
+                        AudioColumns.DATA
                 }, mSelection.toString(), null,
                 PreferenceUtils.getInstance(context).getSongSortOrder());
     }

@@ -36,9 +36,9 @@ public class ArtWork {
 		@Override
 		protected void onPostExecute(Bitmap result) {
 			super.onPostExecute(result);
-			Message msg=MusicWaveActivity.hand.obtainMessage(MusicWaveActivity.UPDATE_ALBUM);
-			msg.obj=result;
-			msg.sendToTarget();
+//			Message msg=MusicWaveActivity.hand.obtainMessage(MusicWaveActivity.UPDATE_ALBUM);
+//			msg.obj=result;
+//			msg.sendToTarget();
 		}
 	}
 	
@@ -85,7 +85,7 @@ public class ArtWork {
 				}
 			}
 		}
-		return null;
+		return getDefaultArtwork(context);
 	}
 
 	private static Bitmap getArtworkFromFile(Context context, long songid,
@@ -120,11 +120,8 @@ public class ArtWork {
 	}
 
 	private static Bitmap getDefaultArtwork(Context context) {
-		BitmapFactory.Options opts = new BitmapFactory.Options();
-		opts.inPreferredConfig = Bitmap.Config.RGB_565;
-		return BitmapFactory.decodeStream(context.getResources()
-				.openRawResource(R.drawable.home_play_bar_default_album), null,
-				opts);
+		return BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.home_play_bar_default_album);
 	}
 
 	private static final Uri sArtworkUri = Uri

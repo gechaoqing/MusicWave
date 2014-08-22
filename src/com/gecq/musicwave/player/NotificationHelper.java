@@ -32,7 +32,6 @@ import android.widget.RemoteViews;
  *
  * @author Andrew Neal (andrewdneal@gmail.com)
  */
-@SuppressLint("NewApi")
 public class NotificationHelper {
 
     /**
@@ -79,7 +78,8 @@ public class NotificationHelper {
     /**
      * Call this to build the {@link Notification}.
      */
-    public void buildNotification(final String albumName, final String artistName,
+    @SuppressLint("NewApi")
+	public void buildNotification(final String albumName, final String artistName,
             final String trackName, final Long albumId, final Bitmap albumArt,
             final boolean isPlaying) {
 
@@ -92,7 +92,7 @@ public class NotificationHelper {
 
         // Notification Builder
         mNotification = new NotificationCompat.Builder(mService)
-                .setSmallIcon(R.drawable.stat_notify_music)
+                .setSmallIcon(R.drawable.notification_icon)
                 .setContentIntent(getPendingIntent())
                 .setPriority(Notification.PRIORITY_DEFAULT)
                 .setContent(mNotificationTemplate)
@@ -145,8 +145,9 @@ public class NotificationHelper {
      * Open to the now playing screen
      */
     private PendingIntent getPendingIntent() {
-        return PendingIntent.getActivity(mService, 0, new Intent("com.andrew.apollo.AUDIO_PLAYER")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), 0);
+    	Intent notificationIntent=new Intent("com.gecq.musicwave.MUSIC_PLAYER");
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        return PendingIntent.getActivity(mService, 0, notificationIntent,0);
     }
 
     /**

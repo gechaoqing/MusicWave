@@ -12,7 +12,6 @@
 package com.gecq.musicwave.ui;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.player.PlayerService;
 import com.gecq.musicwave.utils.CommonUtils;
 import com.gecq.musicwave.utils.MusicUtils;
@@ -27,6 +26,7 @@ import android.widget.Button;
 
 
 /**
+ * 随机播放
  * @author Andrew Neal (andrewdneal@gmail.com)
  */
 public class ShuffleButton extends Button implements OnClickListener, OnLongClickListener {
@@ -42,7 +42,6 @@ public class ShuffleButton extends Button implements OnClickListener, OnLongClic
         setOnClickListener(this);
         // Show the cheat sheet
         setOnLongClickListener(this);
-        setTypeface(MusicWaveActivity.icon);
     }
 
     /**

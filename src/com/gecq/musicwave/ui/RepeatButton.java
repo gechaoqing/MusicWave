@@ -12,7 +12,6 @@
 package com.gecq.musicwave.ui;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.player.PlayerService;
 import com.gecq.musicwave.utils.CommonUtils;
 import com.gecq.musicwave.utils.MusicUtils;
@@ -44,7 +43,6 @@ public class RepeatButton extends Button implements OnClickListener, OnLongClick
         setOnClickListener(this);
         // Show the cheat sheet
         setOnLongClickListener(this);
-        setTypeface(MusicWaveActivity.icon);
     }
 
     /**

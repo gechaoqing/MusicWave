@@ -44,6 +44,9 @@ public class Song {
      * The song duration in seconds
      */
     public int mDuration;
+    
+    /**The song uri path**/
+    public String data;
 
     /**
      * Constructor of <code>Song</code>

@@ -9,7 +9,6 @@ import java.util.TreeSet;
 import com.gecq.musicwave.database.provider.FavoritesStore;
 import com.gecq.musicwave.database.provider.RecentStore;
 import com.gecq.musicwave.utils.ArtWork;
-import com.gecq.musicwave.utils.CommonUtils;
 import com.gecq.musicwave.utils.Lists;
 import com.gecq.musicwave.utils.MusicUtils;
 
@@ -27,13 +26,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.media.RemoteControlClient;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -48,7 +46,6 @@ import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.AudioColumns;
 import android.util.Log;
 
-@SuppressLint("NewApi")
 public class PlayerService extends Service {
 	private static final String TAG = "PlayerService";
 	private static final boolean D = false;
@@ -72,6 +69,14 @@ public class PlayerService extends Service {
 	 * Indicates the queue has been updated
 	 */
 	public static final String QUEUE_CHANGED = "com.gecq.musicwave.queuechanged";
+	
+	/**
+	 * update progress bar 
+	 */
+	public static final String UPDATE_PROGRESS="com.gecq.musicwave.updateprogress";
+	
+	public static final String UPDATE_PROGRESS_POS="com.gecq.musicwave.updateprogress.pos";
+	public static final String UPDATE_PROGRESS_MAX="com.gecq.musicwave.updateprogress.max";
 
 	/**
 	 * Indicates the repeat mode chaned
@@ -87,7 +92,7 @@ public class PlayerService extends Service {
 	 * For backwards compatibility reasons, also provide sticky broadcasts under
 	 * the music package
 	 */
-	public static final String APOLLO_PACKAGE_NAME = "com.gecq.musicwave";
+	public static final String MUSIC_WAVE_PACKAGE_NAME = "com.gecq.musicwave";
 	public static final String MUSIC_PACKAGE_NAME = "com.android.music";
 
 	/**
@@ -456,7 +461,7 @@ public class PlayerService extends Service {
 	/**
 	 * Lock screen controls
 	 */
-	private RemoteControlClient mRemoteControlClient;
+//	private RemoteControlClient mRemoteControlClient;
 
 	private ComponentName mMediaButtonReceiverComponent;
 
@@ -523,6 +528,7 @@ public class PlayerService extends Service {
 		filter.addAction(PREVIOUS_ACTION);
 		filter.addAction(REPEAT_ACTION);
 		filter.addAction(SHUFFLE_ACTION);
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		// Attach the broadcast listener
 		registerReceiver(mIntentReceiver, filter);
 
@@ -552,41 +558,41 @@ public class PlayerService extends Service {
 	 * Initializes the remote control client
 	 */
 	private void setUpRemoteControlClient() {
-		final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-		mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
-		mRemoteControlClient = new RemoteControlClient(
-				PendingIntent.getBroadcast(getApplicationContext(), 0,
-						mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-		mAudioManager.registerRemoteControlClient(mRemoteControlClient);
+//		final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+//		mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
+//		mRemoteControlClient = new RemoteControlClient(
+//				PendingIntent.getBroadcast(getApplicationContext(), 0,
+//						mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+//		mAudioManager.registerRemoteControlClient(mRemoteControlClient);
 
 		// Flags for the media transport control that this client supports.
-		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
-				| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
-				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
-				| RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
-				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
-				| RemoteControlClient.FLAG_KEY_MEDIA_STOP;
+//		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
+//				| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+//				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+//				| RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
+//				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
+//				| RemoteControlClient.FLAG_KEY_MEDIA_STOP;
 
-		if (CommonUtils.hasJellyBeanMR2()) {
-			flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
-
-			mRemoteControlClient
-					.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener() {
-						@Override
-						public long onGetPlaybackPosition() {
-							return position();
-						}
-					});
-			mRemoteControlClient
-					.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener() {
-						@Override
-						public void onPlaybackPositionUpdate(long newPositionMs) {
-							seek(newPositionMs);
-						}
-					});
-		}
-
-		mRemoteControlClient.setTransportControlFlags(flags);
+//		if (CommonUtils.hasJellyBeanMR2()) {
+//			flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
+//
+//			mRemoteControlClient
+//					.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener() {
+//						@Override
+//						public long onGetPlaybackPosition() {
+//							return position();
+//						}
+//					});
+//			mRemoteControlClient
+//					.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener() {
+//						@Override
+//						public void onPlaybackPositionUpdate(long newPositionMs) {
+//							seek(newPositionMs);
+//						}
+//					});
+//		}
+//
+//		mRemoteControlClient.setTransportControlFlags(flags);
 	}
 
 	/**
@@ -615,8 +621,8 @@ public class PlayerService extends Service {
 
 		// Remove the audio focus listener and lock screen controls
 		mAudioManager.abandonAudioFocus(mAudioFocusListener);
-		if(!mCompatMode)
-		  mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
+//		if(!mCompatMode)
+//		  mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
 
 		// Remove any callbacks from the handler
 		mPlayerHandler.removeCallbacksAndMessages(null);
@@ -732,6 +738,10 @@ public class PlayerService extends Service {
 			cycleRepeat();
 		} else if (SHUFFLE_ACTION.equals(action)) {
 			cycleShuffle();
+		} else if(Intent.ACTION_HEADSET_PLUG.equals(action)){
+			 if(intent.getIntExtra("state", 0) == 1){  
+				 
+			 }
 		}
 	}
 
@@ -987,8 +997,8 @@ public class PlayerService extends Service {
 
 	private Cursor openCursorAndGoToFirst(Uri uri, String[] projection,
 			String selection, String[] selectionArgs) {
-		Cursor c = getContentResolver().query(uri, projection, selection,
-				selectionArgs, null, null);
+		Cursor c =getContentResolver().query(uri, projection, selection,
+				selectionArgs, null);
 		if (c == null) {
 			return null;
 		}
@@ -1275,7 +1285,7 @@ public class PlayerService extends Service {
 	/**
 	 * Notify the change-receivers that something has changed.
 	 */
-	private void notifyChange(final String what) {
+	void notifyChange(final String what) {
 		if (D)
 			Log.d(TAG, "notifyChange: what = " + what);
 
@@ -1293,10 +1303,13 @@ public class PlayerService extends Service {
 		intent.putExtra("track", getTrackName());
 		intent.putExtra("playing", isPlaying());
 		intent.putExtra("isfavorite", isFavorite());
+		if(what.equals(META_CHANGED)){
+			intent.putExtra(UPDATE_PROGRESS_MAX, duration());
+		}
 		sendStickyBroadcast(intent);
 
 		final Intent musicIntent = new Intent(intent);
-		musicIntent.setAction(what.replace(APOLLO_PACKAGE_NAME,
+		musicIntent.setAction(what.replace(MUSIC_WAVE_PACKAGE_NAME,
 				MUSIC_PACKAGE_NAME));
 		sendStickyBroadcast(musicIntent);
 
@@ -1338,48 +1351,48 @@ public class PlayerService extends Service {
 	 *            The broadcast
 	 */
 	private void updateRemoteControlClient(final String what) {
-		int playState = mIsSupposedToBePlaying ? RemoteControlClient.PLAYSTATE_PLAYING
-				: RemoteControlClient.PLAYSTATE_PAUSED;
-
-		if (CommonUtils.hasJellyBeanMR2()
-				&& (what.equals(PLAYSTATE_CHANGED) || what
-						.equals(POSITION_CHANGED))) {
-			mRemoteControlClient.setPlaybackState(playState, position(), 1.0f);
-		} else if (what.equals(PLAYSTATE_CHANGED)) {
-			mRemoteControlClient.setPlaybackState(playState);
-		} else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
-			Bitmap albumArt = getAlbumArt();
-			if (albumArt != null) {
-				// RemoteControlClient wants to recycle the bitmaps thrown at
-				// it, so we need
-				// to make sure not to hand out our cache copy
-				Bitmap.Config config = albumArt.getConfig();
-				if (config == null) {
-					config = Bitmap.Config.ARGB_8888;
-				}
-				albumArt = albumArt.copy(config, false);
-			}
-			mRemoteControlClient
-					.editMetadata(true)
-					.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
-							getArtistName())
-					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
-							getAlbumArtistName())
-					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM,
-							getAlbumName())
-					.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
-							getTrackName())
-					.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
-							duration())
-					.putBitmap(
-							RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
-							albumArt).apply();
-
-			if (CommonUtils.hasJellyBeanMR2()) {
-				mRemoteControlClient.setPlaybackState(playState, position(),
-						1.0f);
-			}
-		}
+//		int playState = mIsSupposedToBePlaying ? RemoteControlClient.PLAYSTATE_PLAYING
+//				: RemoteControlClient.PLAYSTATE_PAUSED;
+//
+//		if (CommonUtils.hasJellyBeanMR2()
+//				&& (what.equals(PLAYSTATE_CHANGED) || what
+//						.equals(POSITION_CHANGED))) {
+////			mRemoteControlClient.setPlaybackState(playState, position(), 1.0f);
+//		} else if (what.equals(PLAYSTATE_CHANGED)) {
+//			mRemoteControlClient.setPlaybackState(playState);
+//		} else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
+//			Bitmap albumArt = getAlbumArt();
+//			if (albumArt != null) {
+//				// RemoteControlClient wants to recycle the bitmaps thrown at
+//				// it, so we need
+//				// to make sure not to hand out our cache copy
+//				Bitmap.Config config = albumArt.getConfig();
+//				if (config == null) {
+//					config = Bitmap.Config.ARGB_8888;
+//				}
+//				albumArt = albumArt.copy(config, false);
+//			}
+//			mRemoteControlClient
+//					.editMetadata(true)
+//					.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
+//							getArtistName())
+//					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+//							getAlbumArtistName())
+//					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM,
+//							getAlbumName())
+//					.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+//							getTrackName())
+//					.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
+//							duration())
+//					.putBitmap(
+//							RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
+//							albumArt).apply();
+//
+//			if (CommonUtils.hasJellyBeanMR2()) {
+//				mRemoteControlClient.setPlaybackState(playState, position(),
+//						1.0f);
+//			}
+//		}
 	}
 
 	/**
@@ -1592,10 +1605,8 @@ public class PlayerService extends Service {
 					updateCursor(uri);
 
 				} else if (id != -1
-						&& path.startsWith(MediaStore.Files.getContentUri(
-								"external").toString())) {
+						&& path.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
 					updateCursor(id);
-
 				} else {
 					String where = MediaStore.Audio.Media.DATA + "=?";
 					String[] selectionArgs = new String[] { path };
@@ -1968,7 +1979,6 @@ public class PlayerService extends Service {
 	public void play() {
 		int status = mAudioManager.requestAudioFocus(mAudioFocusListener,
 				AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
 		if (D)
 			Log.d(TAG, "Starting playback: audio focus request status = "
 					+ status);
@@ -1976,6 +1986,14 @@ public class PlayerService extends Service {
 		if (status != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 			return;
 		}
+		if(mAudioManager.isBluetoothA2dpOn()){
+			
+		}else if(mAudioManager.isSpeakerphoneOn()){
+			
+		}else if(mAudioManager.isWiredHeadsetOn()){
+			
+		}
+		mAudioManager.setSpeakerphoneOn(true);
 
 		mAudioManager.registerMediaButtonEventReceiver(new ComponentName(
 				getPackageName(), MediaButtonIntentReceiver.class.getName()));
@@ -1997,7 +2015,7 @@ public class PlayerService extends Service {
 				mIsSupposedToBePlaying = true;
 				notifyChange(PLAYSTATE_CHANGED);
 			}
-			new ProgressBarThread().start();
+			new ProgressBarThread(duration,this).start();
 			cancelShutdown();
 			updateNotification();
 		} else if (mPlayListLen <= 0) {

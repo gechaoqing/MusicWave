@@ -1,4 +1,4 @@
-package com.gecq.musicwave.player;
+/*package com.gecq.musicwave.player;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -15,9 +15,9 @@ import com.gecq.musicwave.formats.Mp3;
 import android.media.audiofx.EnvironmentalReverb;
 import android.os.Message;
 
-/**
+*//**
  * Created by chaoqing on 14-7-16.
- */
+ *//*
 public class PlayerManager implements Runnable {
 	private static PlayerManager pm;
 	private MediaPlayer player;
@@ -243,3 +243,4 @@ public class PlayerManager implements Runnable {
 		return player;
 	}
 }
+*/

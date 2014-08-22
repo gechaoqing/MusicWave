@@ -3,14 +3,11 @@ package com.gecq.musicwave.adapters;
 import java.util.List;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.formats.Mp3;
 import com.gecq.musicwave.frames.AllMusicFragment;
-import com.gecq.musicwave.loaders.SongLoader;
-import com.gecq.musicwave.player.PlayerManager;
+import com.gecq.musicwave.models.Song;
 import com.gecq.musicwave.utils.MusicUtils;
 
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +20,15 @@ import android.widget.TextView;
  * Created by chaoqing on 14-8-9.
  */
 public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener {
-	private List<Mp3> mp3s;
+	private List<Song> mp3s;
 	private AllMusicFragment frame;
-	private int selected=-1;
+	private int selected = -1;
+	private long[] ids;
 
-	public AllMusicAdapter(final AllMusicFragment frame, final List<Mp3> mp3s) {
+	public AllMusicAdapter(final AllMusicFragment frame, final List<Song> mp3s) {
 		this.frame = frame;
 		this.mp3s = mp3s;
+		ids();
 	}
 
 	@Override
@@ -44,7 +43,7 @@ public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener 
 
 	@Override
 	public long getItemId(int i) {
-		return i;
+		return mp3s.get(i).mSongId;
 	}
 
 	@SuppressLint("InflateParams")
@@ -62,11 +61,11 @@ public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener 
 			num.setBackgroundResource(R.color.all_music_num_bg);
 		}
 		TextView name = (TextView) view.findViewById(R.id.all_music_song_name);
-		Mp3 mp3 = mp3s.get(i);
-		name.setText(mp3.getName());
+		Song mp3 = mp3s.get(i);
+		name.setText(mp3.mSongName);
 		TextView singer = (TextView) view
 				.findViewById(R.id.all_music_song_singer);
-		singer.setText(mp3.getArtist());
+		singer.setText(mp3.mArtistName);
 		view.setTag(i);
 		return view;
 	}
@@ -74,13 +73,7 @@ public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		Cursor cursor = SongLoader.makeSongCursor(frame.getActivity());
-        final long[] list = MusicUtils.getSongListForCursor(cursor);
-        MusicUtils.playAll(frame.getActivity(), list, position, false);
-        cursor.close();
-        cursor = null;
-//		Mp3 mp3 = mp3s.get(position);
-//		PlayerManager.getInstance().playNew(mp3);
+		MusicUtils.playAll(frame.getActivity(), ids(), position, false);
 		int count = parent.getChildCount();
 		for (int i = 0; i < count; i++) {
 			View v = parent.getChildAt(i);
@@ -89,7 +82,23 @@ public class AllMusicAdapter extends BaseAdapter implements OnItemClickListener 
 				num.setBackgroundResource(R.color.all_music_num_bg);
 			}
 		}
-		view.findViewById(R.id.all_music_num).setBackgroundResource(R.color.all_music_selected_num_bg);
+		view.findViewById(R.id.all_music_num).setBackgroundResource(
+				R.color.all_music_selected_num_bg);
 		selected = position;
 	}
+
+	private long[] ids() {
+		if (ids == null) {
+			if (mp3s != null) {
+				ids = new long[mp3s.size()];
+				int j = 0;
+				for (Song s : mp3s) {
+					ids[j] = s.mSongId;
+					j++;
+				}
+			}
+		}
+		return ids;
+	}
+
 }

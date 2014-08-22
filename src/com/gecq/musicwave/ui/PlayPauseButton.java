@@ -32,7 +32,18 @@ import android.widget.Button;
  */
 public class PlayPauseButton extends Button implements OnClickListener, OnLongClickListener {
 
-    /**
+	
+    public PlayPauseButton(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		setTypeface(MusicWaveActivity.icon);
+	}
+
+	public PlayPauseButton(Context context) {
+		super(context);
+		setTypeface(MusicWaveActivity.icon);
+	}
+
+	/**
      * @param context The {@link Context} to use
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
