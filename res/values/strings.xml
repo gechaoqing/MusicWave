@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name">乐浪</string>
-    <string name="app_string">乐浪-我的音乐</string>
+    <string name="app_string">我的音乐</string>
     <string name="singer_img">播放歌曲图片</string>
     <string name="add_play_list">新建歌单</string>
     <string name="favourite_str">我的最爱</string>
