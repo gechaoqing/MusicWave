@@ -4,16 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-public class HomeItemsLayout extends RelativeLayout {
-	public HomeItemsLayout(Context context) {
+public class SquareItemsLayout extends RelativeLayout {
+	public SquareItemsLayout(Context context) {
 		super(context);
 	}
 
-	public HomeItemsLayout(Context context, AttributeSet attrs) {
+	public SquareItemsLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public HomeItemsLayout(Context context, AttributeSet attrs, int defStyle) {
+	public SquareItemsLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

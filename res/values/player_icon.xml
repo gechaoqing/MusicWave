@@ -12,7 +12,16 @@
     <string name="icon_play_repeat_current">k</string>
     <string name="icon_play_repeat_none">l</string>
     <string name="icon_play_shuffle">n</string>
-    <string name="icon_play_shuffle_all">o</string>
+    
+    
+    
+    <string name="icon_all_songs">a</string>
+    <string name="icon_play_list_mine">m</string>
+    <string name="icon_singer">o</string>
+    <string name="icon_recent_listen">r</string>
+    <string name="icon_music_effect">e</string>
+    <string name="icon_scan_songs">c</string>
+    <string name="icon_setting">c</string>
     <!-- a,r,m,e,c,d,h,i -->
 
 </resources>

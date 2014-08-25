@@ -18,11 +18,14 @@ import com.gecq.musicwave.utils.MusicUtils;
 import com.gecq.musicwave.utils.MusicUtils.ServiceToken;
 
 import android.media.AudioManager;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.*;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -75,7 +78,6 @@ public class MusicWaveActivity extends FragmentActivity implements
 		mPlaybackStatus = new PlaybackStatus(this);
 
 		initViews();
-		newHandler();
 	}
 
 	private void setHomeFrame() {
@@ -210,7 +212,7 @@ public class MusicWaveActivity extends FragmentActivity implements
 						listener.onMetaChanged();
 					}
 				}
-				int max = intent.getIntExtra(PlayerService.UPDATE_PROGRESS_MAX,
+				int max = (int) intent.getLongExtra(PlayerService.UPDATE_PROGRESS_MAX,
 						0);
 				mReference.get().pbar.setMax(max);
 			} else if (action.equals(PlayerService.PLAYSTATE_CHANGED)) {
@@ -350,22 +352,85 @@ public class MusicWaveActivity extends FragmentActivity implements
 		// Current info
 		updateBottomActionBarInfo();
 	}
+	
+	private static final int REFRESH_TIME = 1;
+	private long mPosOverride = -1;
+	// Handler used to update the current time
+    private TimeHandler mTimeHandler;
+    private boolean mIsPaused = false;
+	 private long refreshCurrentTime() {
+	        if (mService == null) {
+	            return 500;
+	        }
+	        try {
+	            final long pos = mPosOverride < 0 ? MusicUtils.position() : mPosOverride;
+	            if (pos >= 0 && MusicUtils.duration() > 0) {
+//	                refreshCurrentTimeText(pos);
+	                final int progress = (int)(1000 * pos / MusicUtils.duration());
+	                pbar.setProgress(progress);
+	            } else {
+	                pbar.setProgress(1000);
+	            }
+	            // calculate the number of milliseconds until the next full second,
+	            // so
+	            // the counter can be updated at just the right time
+	            final long remaining = 1000 - pos % 1000;
+	            // approximate how often we would need to refresh the slider to
+	            // move it smoothly
+	            int width = pbar.getWidth();
+	            if (width == 0) {
+	                width = 320;
+	            }
+	            final long smoothrefreshtime = MusicUtils.duration() / width;
+	            if (smoothrefreshtime > remaining) {
+	                return remaining;
+	            }
+	            if (smoothrefreshtime < 20) {
+	                return 20;
+	            }
+	            return smoothrefreshtime;
+	        } catch (final Exception ignored) {
 
-	private void newHandler() {
-		// hand=new Handler(Looper.myLooper()){
-		// @Override
-		// public void handleMessage(Message msg) {
-		// super.handleMessage(msg);
-		// switch (msg.what){
-		// case UPDATE_PROGRESS:
-		// pbar.setProgress(msg.arg1);
-		// break;
-		// case SET_PROGRESS_MAX:
-		// pbar.setMax(msg.arg1);
-		// break;
-		// }
-		// }
-		// };
-	}
+	        }
+	        return 500;
+	    }
+
+	 /**
+     * @param delay When to update
+     */
+    private void queueNextRefresh(final long delay) {
+        if (!mIsPaused) {
+            final Message message = mTimeHandler.obtainMessage(REFRESH_TIME);
+            mTimeHandler.removeMessages(REFRESH_TIME);
+            mTimeHandler.sendMessageDelayed(message, delay);
+        }
+    }
+    
+    /**
+     * Used to update the current time string
+     */
+    private static final class TimeHandler extends Handler {
+
+        private final WeakReference<MusicWaveActivity> mAudioPlayer;
+
+        /**
+         * Constructor of <code>TimeHandler</code>
+         */
+        public TimeHandler(final MusicWaveActivity player) {
+            mAudioPlayer = new WeakReference<MusicWaveActivity>(player);
+        }
+
+        @Override
+        public void handleMessage(final Message msg) {
+            switch (msg.what) {
+                case REFRESH_TIME:
+                    final long next = mAudioPlayer.get().refreshCurrentTime();
+                    mAudioPlayer.get().queueNextRefresh(next);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
 }

@@ -251,11 +251,14 @@ public final class MusicUtils {
                         mService.setRepeatMode(PlayerService.REPEAT_ALL);
                         break;
                     case PlayerService.REPEAT_ALL:
-                        mService.setRepeatMode(PlayerService.REPEAT_CURRENT);
-                        if (mService.getShuffleMode() != PlayerService.SHUFFLE_NONE) {
-                            mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
-                        }
+                    	mService.setRepeatMode(PlayerService.SHUFFLE_NORMAL);
+//                        if (mService.getShuffleMode() != PlayerService.SHUFFLE_NONE) {
+//                            mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
+//                        }
                         break;
+                    case PlayerService.SHUFFLE_NORMAL:
+                    	 mService.setRepeatMode(PlayerService.REPEAT_CURRENT);
+                    	break;
                     default:
                         mService.setRepeatMode(PlayerService.REPEAT_NONE);
                         break;
@@ -269,27 +272,27 @@ public final class MusicUtils {
      * Cycles through the shuffle options.
      */
     public static void cycleShuffle() {
-        try {
-            if (mService != null) {
-                switch (mService.getShuffleMode()) {
-                    case PlayerService.SHUFFLE_NONE:
-                        mService.setShuffleMode(PlayerService.SHUFFLE_NORMAL);
-                        if (mService.getRepeatMode() == PlayerService.REPEAT_CURRENT) {
-                            mService.setRepeatMode(PlayerService.REPEAT_ALL);
-                        }
-                        break;
-                    case PlayerService.SHUFFLE_NORMAL:
-                        mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
-                        break;
-                    case PlayerService.SHUFFLE_AUTO:
-                        mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } catch (final RemoteException ignored) {
-        }
+//        try {
+//            if (mService != null) {
+//                switch (mService.getShuffleMode()) {
+//                    case PlayerService.SHUFFLE_NONE:
+//                        mService.setShuffleMode(PlayerService.SHUFFLE_NORMAL);
+//                        if (mService.getRepeatMode() == PlayerService.REPEAT_CURRENT) {
+//                            mService.setRepeatMode(PlayerService.REPEAT_ALL);
+//                        }
+//                        break;
+//                    case PlayerService.SHUFFLE_NORMAL:
+//                        mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
+//                        break;
+//                    case PlayerService.SHUFFLE_AUTO:
+//                        mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        } catch (final RemoteException ignored) {
+//        }
     }
 
     /**
@@ -614,9 +617,10 @@ public final class MusicUtils {
         try {
             if (forceShuffle) {
                 mService.setShuffleMode(PlayerService.SHUFFLE_NORMAL);
-            } else {
-                mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
-            }
+            } 
+//            else {
+//                mService.setShuffleMode(PlayerService.SHUFFLE_NONE);
+//            }
             final long currentId = mService.getAudioId();
             final int currentQueuePosition = getQueuePosition();
             if (position != -1 && currentQueuePosition == position && currentId == list[position]) {

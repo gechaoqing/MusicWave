@@ -7,7 +7,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
- */
+ 
 
 package com.gecq.musicwave.ui;
 
@@ -25,17 +25,17 @@ import android.view.View.OnLongClickListener;
 import android.widget.Button;
 
 
-/**
+*//**
  * 随机播放
  * @author Andrew Neal (andrewdneal@gmail.com)
- */
+ *//*
 public class ShuffleButton extends Button implements OnClickListener, OnLongClickListener {
 
 
-    /**
+    *//**
      * @param context The {@link Context} to use
      * @param attrs The attributes of the XML tag that is inflating the view.
-     */
+     *//*
     public ShuffleButton(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         // Control playback (cycle shuffle)
@@ -44,18 +44,18 @@ public class ShuffleButton extends Button implements OnClickListener, OnLongClic
         setOnLongClickListener(this);
     }
 
-    /**
+    *//**
      * {@inheritDoc}
-     */
+     *//*
     @Override
     public void onClick(final View v) {
         MusicUtils.cycleShuffle();
         updateShuffleState();
     }
 
-    /**
+    *//**
      * {@inheritDoc}
-     */
+     *//*
     @Override
     public boolean onLongClick(final View view) {
         if (TextUtils.isEmpty(view.getContentDescription())) {
@@ -66,9 +66,9 @@ public class ShuffleButton extends Button implements OnClickListener, OnLongClic
         }
     }
 
-    /**
+    *//**
      * Sets the correct drawable for the shuffle state.
-     */
+     *//*
     public void updateShuffleState() {
         switch (MusicUtils.getShuffleMode()) {
             case PlayerService.SHUFFLE_NORMAL:
@@ -89,3 +89,4 @@ public class ShuffleButton extends Button implements OnClickListener, OnLongClic
     }
 
 }
+*/

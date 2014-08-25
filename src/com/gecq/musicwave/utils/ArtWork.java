@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.gecq.musicwave.R;
-import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.formats.Mp3;
 
 import android.content.ContentResolver;
@@ -16,7 +15,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Message;
 import android.os.ParcelFileDescriptor;
 
 public class ArtWork {
@@ -85,7 +83,7 @@ public class ArtWork {
 				}
 			}
 		}
-		return getDefaultArtwork(context);
+		return null;
 	}
 
 	private static Bitmap getArtworkFromFile(Context context, long songid,

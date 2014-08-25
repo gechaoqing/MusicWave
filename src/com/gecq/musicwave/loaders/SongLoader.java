@@ -61,6 +61,13 @@ public class SongLoader extends WrappedAsyncTaskLoader<List<Song>> {
         // Gather the data
         if (mCursor != null && mCursor.moveToFirst()) {
             do {
+            	
+            	 // Copy the duration
+                final long duration = mCursor.getLong(4);
+                if(duration<60000){
+                	continue;
+                }
+            	
                 // Copy the song Id
                 final long id = mCursor.getLong(0);
 
@@ -72,9 +79,6 @@ public class SongLoader extends WrappedAsyncTaskLoader<List<Song>> {
 
                 // Copy the album name
                 final String album = mCursor.getString(3);
-
-                // Copy the duration
-                final long duration = mCursor.getLong(4);
 
                 // Convert the duration into seconds
                 final int durationInSecs = (int) duration / 1000;

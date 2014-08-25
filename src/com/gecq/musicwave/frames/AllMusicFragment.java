@@ -1,34 +1,38 @@
 package com.gecq.musicwave.frames;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.activity.MusicWaveActivity;
-import com.gecq.musicwave.adapters.AllMusicAdapter;
+import com.gecq.musicwave.adapters.AllSongAdapter;
 import com.gecq.musicwave.loaders.SongLoader;
 import com.gecq.musicwave.models.HomeGridItem;
 import com.gecq.musicwave.models.Song;
+import com.gecq.musicwave.utils.MusicUtils;
 
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.provider.MediaStore.Audio.AudioColumns;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Created by chaoqing on 14-8-8.
  */
-public class AllMusicFragment extends MusicWaveFragment {
-	private List<Song> list;
+public class AllMusicFragment extends MusicWaveFragment implements
+		LoaderCallbacks<List<Song>> {
+	private ListView allMusic;
+	private AllSongAdapter adapter;
+	private View mRootView;
+	private static final int LOADER = 0;
 
 	public AllMusicFragment(HomeFragment home) {
 		super(home);
@@ -38,14 +42,12 @@ public class AllMusicFragment extends MusicWaveFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View all = inflater.inflate(R.layout.all_music_main, null, false);
-		Button backHome = (Button) all.findViewById(R.id.all_music_back);
-		getAllSongs();
-		ListView allMusic = (ListView) all.findViewById(R.id.all_music_list);
-		AllMusicAdapter adapter = new AllMusicAdapter(this, list);
+		mRootView = inflater.inflate(R.layout.all_music_main, null, false);
+		Button backHome = (Button) mRootView.findViewById(R.id.all_music_back);
+		allMusic = (ListView) mRootView.findViewById(R.id.all_music_list);
 		allMusic.setAdapter(adapter);
 		allMusic.setOnItemClickListener(adapter);
-		allMusic.setEmptyView(all.findViewById(R.id.all_music_empty));
+		allMusic.setEmptyView(mRootView.findViewById(R.id.all_music_empty));
 		backHome.setTypeface(MusicWaveActivity.icon);
 		backHome.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -61,78 +63,80 @@ public class AllMusicFragment extends MusicWaveFragment {
 				transaction.commit();
 			}
 		});
-		return all;
+		return mRootView;
 	}
 
 	@Override
 	public int getType() {
 		return HomeGridItem.HOME_MENU_ALL;
 	}
-	
-	private void getAllSongs(){
-		Cursor cursor = SongLoader.makeSongCursor(getActivity());
-		if(list==null){
-			list = new ArrayList<Song>();
-			for(int i=0;i<cursor.getCount();i++){
-				cursor.moveToNext();
-				int idDex=cursor.getColumnIndex(BaseColumns._ID);
-				int titleDex=cursor.getColumnIndex(AudioColumns.TITLE);
-				int artistDex=cursor.getColumnIndex(AudioColumns.ARTIST);
-				int albumDex=cursor.getColumnIndex(AudioColumns.ALBUM);
-				int durationDex=cursor.getColumnIndex(AudioColumns.DURATION);
-				int pathDex=cursor.getColumnIndex(AudioColumns.DATA);
-				long songId=cursor.getLong(idDex);
-				String songName=cursor.getString(titleDex);
-				String artistName=cursor.getString(artistDex);
-				String albumName=cursor.getString(albumDex);
-				int duration=cursor.getInt(durationDex);
-				Song s=new Song(songId, songName, artistName, albumName, duration);
-				s.data=cursor.getString(pathDex);
-				list.add(s);
-			}
-		}
-		cursor.close();
-		cursor=null;
+
+	@Override
+	public void onActivityCreated(final Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		// Enable the options menu
+		setHasOptionsMenu(false);
+		// Start the loader
+		getLoaderManager().initLoader(LOADER, null, this);
 	}
 
-//	private void queryAll() {
-//		if (list == null) {
-//			list = new ArrayList<Mp3>();
-//			Cursor mAudioCursor = getActivity().getContentResolver().query(
-//					MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
-//					null, MediaStore.Audio.AudioColumns.TITLE);
-//			for (int i = 0; i < mAudioCursor.getCount(); i++) {
-//				mAudioCursor.moveToNext();
-//				int indexTitle = mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
-//				int indexARTIST = mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
-//				int indexALBUM = mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);
-//				int indexPath = mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-//				int indexDuration = mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);
-//				int duration = mAudioCursor.getInt(indexDuration);
-//				int song_id=mAudioCursor
-//						.getColumnIndex(MediaStore.Audio.AudioColumns._ID);
-//				int albumIndex=mAudioCursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
-//				String strTitle = mAudioCursor.getString(indexTitle);
-//				String strARTIST = mAudioCursor.getString(indexARTIST);
-//				String strALBUM = mAudioCursor.getString(indexALBUM);
-//				String path = mAudioCursor.getString(indexPath);
-//				long id=mAudioCursor.getLong(song_id);
-//				long albumId=mAudioCursor.getLong(albumIndex);
-//				if (duration > 60000) {
-//					Mp3 mp3 = new Mp3(path);
-//					mp3.setId(id);
-//					mp3.setAlbumId(albumId);
-//					mp3.setAlbum(strALBUM);
-//					mp3.setName(strTitle);
-//					mp3.setArtist(strARTIST);
-//					list.add(mp3);
-//				}
-//			}
-//		}
-//	}
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// Create the adpater
+		adapter = new AllSongAdapter(getActivity(), R.layout.list_item_simple);
+	}
+
+	@Override
+	public Loader<List<Song>> onCreateLoader(int arg0, Bundle arg1) {
+		return new SongLoader(getActivity());
+	}
+	
+	public void scrollToCurrentSong() {
+		final int currentArtistPosition = getItemPositionBySong();
+		if (currentArtistPosition != 0) {
+			allMusic.setSelection(currentArtistPosition);
+		}
+	}
+	
+	private int getItemPositionBySong() {
+		final long songid = MusicUtils.getCurrentArtistId();
+		if (adapter == null) {
+			return 0;
+		}
+		for (int i = 0; i < adapter.getCount(); i++) {
+			if (adapter.getItem(i).mSongId == songid) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<List<Song>> loader, List<Song> data) {
+		// Check for any errors
+		if (data.isEmpty()) {
+			// Set the empty text
+			final TextView empty = (TextView) mRootView
+					.findViewById(R.id.all_music_empty);
+			empty.setText(getString(R.string.empty_song));
+			allMusic.setEmptyView(empty);
+			return;
+		}
+
+		// Start fresh
+		adapter.unload();
+		// Add the data to the adpater
+		for (final Song song : data) {
+			adapter.add(song);
+		}
+		// Build the cache
+		adapter.buildCache();
+	}
+
+	@Override
+	public void onLoaderReset(Loader<List<Song>> arg0) {
+
+	}
+
 }

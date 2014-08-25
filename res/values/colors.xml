@@ -12,6 +12,9 @@
     <color name="play_progress">#440097a7</color>
 
     <color name="player_controller_button_pressed_bak">#AA32ACD1</color>
+    
+    <color name="current_playing_background">#1100bcd4</color>
+    <color name="color_transparent">#00000000</color>
 
     <color name="button_style_pressed">#ff156aab</color>
     <color name="button_style_focused">#ff155a98</color>

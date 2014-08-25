@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Used to indicate the number of artists -->
+    <plurals name="Nartists">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> 歌手</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 歌手</item>
+    </plurals>
+
+    <!-- Used to indicate the number of albums for an artist -->
+    <plurals name="Nalbums">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> 专辑</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 专辑</item>
+    </plurals>
+    
+    <!-- Used to indicate the number of songs for an album -->
+    <plurals name="Nsongs">
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> 歌曲</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 歌曲</item>
+    </plurals>
+
+</resources>

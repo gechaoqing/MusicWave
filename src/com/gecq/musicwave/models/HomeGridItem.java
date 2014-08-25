@@ -10,6 +10,7 @@ public class HomeGridItem {
 	public static final int HOME_MENU_EFFECTS = 4;
 	public static final int HOME_MENU_SCAN=5;
 	public static final int HOME_MENU_SETTING=6;
+	public static final int HOME_MENU_SINGER=7;
 	private String name;
 	private String icon;
 	private int action;

@@ -52,6 +52,7 @@ public class RepeatButton extends Button implements OnClickListener, OnLongClick
     public void onClick(final View v) {
         MusicUtils.cycleRepeat();
         updateRepeatState();
+        CommonUtils.showCheatSheet(v);
     }
 
     /**
@@ -74,15 +75,19 @@ public class RepeatButton extends Button implements OnClickListener, OnLongClick
         switch (MusicUtils.getRepeatMode()) {
             case PlayerService.REPEAT_ALL:
                 setContentDescription(getResources().getString(R.string.accessibility_repeat_all));
-                setText(R.string.icon_play_repeat_all);;
+                setText(R.string.icon_play_repeat_all);
                 break;
+            case PlayerService.SHUFFLE_NORMAL:
+            	 setContentDescription(getResources().getString(R.string.accessibility_shuffle));
+                 setText(R.string.icon_play_shuffle);
+            	break;
             case PlayerService.REPEAT_CURRENT:
                 setContentDescription(getResources().getString(R.string.accessibility_repeat_one));
-                setText(R.string.icon_play_repeat_current);;
+                setText(R.string.icon_play_repeat_current);
                 break;
             case PlayerService.REPEAT_NONE:
                 setContentDescription(getResources().getString(R.string.accessibility_repeat));
-                setText(R.string.icon_play_repeat_none);;
+                setText(R.string.icon_play_repeat_none);
                 break;
             default:
                 break;

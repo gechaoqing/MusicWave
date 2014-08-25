@@ -197,20 +197,17 @@ public class PlayerService extends Service {
 	 */
 	public static final int LAST = 3;
 
-	/**
-	 * Shuffles no songs, turns shuffling off
-	 */
-	public static final int SHUFFLE_NONE = 0;
+//	/**
+//	 * Shuffles no songs, turns shuffling off
+//	 */
+//	public static final int SHUFFLE_NONE = 0;
 
-	/**
-	 * Shuffles all songs
-	 */
-	public static final int SHUFFLE_NORMAL = 1;
+	
 
-	/**
-	 * Party shuffle
-	 */
-	public static final int SHUFFLE_AUTO = 2;
+//	/**
+//	 * Party shuffle
+//	 */
+//	public static final int SHUFFLE_AUTO = 2;
 
 	/**
 	 * Turns repeat off
@@ -226,6 +223,11 @@ public class PlayerService extends Service {
 	 * Repeats all the tracks in a list
 	 */
 	public static final int REPEAT_ALL = 2;
+	
+	/**
+	 * Shuffles all songs
+	 */
+	public static final int SHUFFLE_NORMAL = 3;
 
 	/**
 	 * Indicates when the track ends
@@ -376,7 +378,7 @@ public class PlayerService extends Service {
 
 	private int mMediaMountedCount = 0;
 
-	private int mShuffleMode = SHUFFLE_NONE;
+//	private int mShuffleMode = SHUFFLE_NONE;
 
 	private int mRepeatMode = REPEAT_NONE;
 
@@ -736,9 +738,11 @@ public class PlayerService extends Service {
 			releaseServiceUiAndStop();
 		} else if (REPEAT_ACTION.equals(action)) {
 			cycleRepeat();
-		} else if (SHUFFLE_ACTION.equals(action)) {
-			cycleShuffle();
-		} else if(Intent.ACTION_HEADSET_PLUG.equals(action)){
+		} 
+//		else if (SHUFFLE_ACTION.equals(action)) {
+//			cycleShuffle();
+//		} 
+		else if(Intent.ACTION_HEADSET_PLUG.equals(action)){
 			 if(intent.getIntExtra("state", 0) == 1){  
 				 
 			 }
@@ -905,7 +909,7 @@ public class PlayerService extends Service {
 					mPlayPos = -1;
 					closeCursor();
 				} else {
-					if (mShuffleMode != SHUFFLE_NONE) {
+					if (mRepeatMode == SHUFFLE_NORMAL) {
 						mPlayPos = getNextPosition(true);
 					} else if (mPlayPos >= mPlayListLen) {
 						mPlayPos = 0;
@@ -1097,7 +1101,7 @@ public class PlayerService extends Service {
 				return 0;
 			}
 			return mPlayPos;
-		} else if (mShuffleMode == SHUFFLE_NORMAL) {
+		} else if (mRepeatMode == SHUFFLE_NORMAL) {
 			if (mPlayPos >= 0) {
 				mHistory.add(mPlayPos);
 			}
@@ -1130,7 +1134,7 @@ public class PlayerService extends Service {
 				}
 			}
 			int skip = 0;
-			if (mShuffleMode == SHUFFLE_NORMAL || mShuffleMode == SHUFFLE_AUTO) {
+			if (mRepeatMode == SHUFFLE_NORMAL) {
 				skip = mShuffler.nextInt(numUnplayed);
 			}
 			int cnt = -1;
@@ -1144,7 +1148,7 @@ public class PlayerService extends Service {
 				}
 			}
 			return cnt;
-		} else if (mShuffleMode == SHUFFLE_AUTO) {
+		} else if (mRepeatMode == SHUFFLE_NORMAL) {
 			doAutoShuffleUpdate();
 			return mPlayPos + 1;
 		} else {
@@ -1427,7 +1431,7 @@ public class PlayerService extends Service {
 			}
 			editor.putString("queue", q.toString());
 			editor.putInt("cardid", mCardId);
-			if (mShuffleMode != SHUFFLE_NONE) {
+			if (mRepeatMode == SHUFFLE_NORMAL) {
 				len = mHistory.size();
 				q.setLength(0);
 				for (int i = 0; i < len; i++) {
@@ -1451,7 +1455,7 @@ public class PlayerService extends Service {
 			editor.putLong("seekpos", mPlayer.position());
 		}
 		editor.putInt("repeatmode", mRepeatMode);
-		editor.putInt("shufflemode", mShuffleMode);
+//		editor.putInt("shufflemode", mShuffleMode);
 		editor.apply();
 	}
 
@@ -1525,16 +1529,16 @@ public class PlayerService extends Service {
 			}
 
 			int repmode = mPreferences.getInt("repeatmode", REPEAT_NONE);
-			if (repmode != REPEAT_ALL && repmode != REPEAT_CURRENT) {
+			if (repmode != REPEAT_ALL && repmode != REPEAT_CURRENT&&repmode!=SHUFFLE_NORMAL) {
 				repmode = REPEAT_NONE;
 			}
-			mRepeatMode = repmode;
+//			mRepeatMode = repmode;
 
-			int shufmode = mPreferences.getInt("shufflemode", SHUFFLE_NONE);
-			if (shufmode != SHUFFLE_AUTO && shufmode != SHUFFLE_NORMAL) {
-				shufmode = SHUFFLE_NONE;
-			}
-			if (shufmode != SHUFFLE_NONE) {
+//			int shufmode = mPreferences.getInt("shufflemode", SHUFFLE_NONE);
+//			if (shufmode != SHUFFLE_AUTO && shufmode != SHUFFLE_NORMAL) {
+//				shufmode = SHUFFLE_NONE;
+//			}
+			if (repmode ==SHUFFLE_NORMAL) {
 				q = mPreferences.getString("history", "");
 				qlen = q != null ? q.length() : 0;
 				if (qlen > 1) {
@@ -1566,12 +1570,12 @@ public class PlayerService extends Service {
 					}
 				}
 			}
-			if (shufmode == SHUFFLE_AUTO) {
+			if (repmode == SHUFFLE_NORMAL) {
 				if (!makeAutoShuffleList()) {
-					shufmode = SHUFFLE_NONE;
+					repmode = REPEAT_ALL;
 				}
 			}
-			mShuffleMode = shufmode;
+			mRepeatMode = repmode;
 		}
 	}
 
@@ -1659,7 +1663,7 @@ public class PlayerService extends Service {
 	 * @return The current shuffle mode (all, party, none)
 	 */
 	public int getShuffleMode() {
-		return mShuffleMode;
+		return mRepeatMode;
 	}
 
 	/**
@@ -1934,9 +1938,9 @@ public class PlayerService extends Service {
 	 */
 	public void open(final long[] list, final int position) {
 		synchronized (this) {
-			if (mShuffleMode == SHUFFLE_AUTO) {
-				mShuffleMode = SHUFFLE_NORMAL;
-			}
+//			if (mShuffleMode == SHUFFLE_AUTO) {
+//				mShuffleMode = SHUFFLE_NORMAL;
+//			}
 			final long oldId = getAudioId();
 			final int listlength = list.length;
 			boolean newlist = true;
@@ -1986,14 +1990,6 @@ public class PlayerService extends Service {
 		if (status != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 			return;
 		}
-		if(mAudioManager.isBluetoothA2dpOn()){
-			
-		}else if(mAudioManager.isSpeakerphoneOn()){
-			
-		}else if(mAudioManager.isWiredHeadsetOn()){
-			
-		}
-		mAudioManager.setSpeakerphoneOn(true);
 
 		mAudioManager.registerMediaButtonEventReceiver(new ComponentName(
 				getPackageName(), MediaButtonIntentReceiver.class.getName()));
@@ -2019,7 +2015,7 @@ public class PlayerService extends Service {
 			cancelShutdown();
 			updateNotification();
 		} else if (mPlayListLen <= 0) {
-			setShuffleMode(SHUFFLE_AUTO);
+			setShuffleMode(SHUFFLE_NORMAL);
 		}
 	}
 
@@ -2078,7 +2074,7 @@ public class PlayerService extends Service {
 		if (D)
 			Log.d(TAG, "Going to previous track");
 		synchronized (this) {
-			if (mShuffleMode == SHUFFLE_NORMAL) {
+			if (mRepeatMode == SHUFFLE_NORMAL) {
 				// Go to previously-played track and remove it from the history
 				final int histsize = mHistory.size();
 				if (histsize == 0) {
@@ -2187,11 +2183,11 @@ public class PlayerService extends Service {
 	 */
 	public void setShuffleMode(final int shufflemode) {
 		synchronized (this) {
-			if (mShuffleMode == shufflemode && mPlayListLen > 0) {
+			if (mRepeatMode == shufflemode && mPlayListLen > 0) {
 				return;
 			}
-			mShuffleMode = shufflemode;
-			if (mShuffleMode == SHUFFLE_AUTO) {
+			mRepeatMode = shufflemode;
+			if (mRepeatMode == SHUFFLE_NORMAL) {
 				if (makeAutoShuffleList()) {
 					mPlayListLen = 0;
 					doAutoShuffleUpdate();
@@ -2201,11 +2197,11 @@ public class PlayerService extends Service {
 					notifyChange(META_CHANGED);
 					return;
 				} else {
-					mShuffleMode = SHUFFLE_NONE;
+					mRepeatMode = REPEAT_ALL;
 				}
 			}
 			saveQueue(false);
-			notifyChange(SHUFFLEMODE_CHANGED);
+			notifyChange(REPEATMODE_CHANGED);
 		}
 	}
 
@@ -2222,7 +2218,7 @@ public class PlayerService extends Service {
 			openCurrentAndNext();
 			play();
 			notifyChange(META_CHANGED);
-			if (mShuffleMode == SHUFFLE_AUTO) {
+			if (mRepeatMode == SHUFFLE_NORMAL) {
 				doAutoShuffleUpdate();
 			}
 		}
@@ -2268,10 +2264,12 @@ public class PlayerService extends Service {
 		if (mRepeatMode == REPEAT_NONE) {
 			setRepeatMode(REPEAT_ALL);
 		} else if (mRepeatMode == REPEAT_ALL) {
+			setRepeatMode(SHUFFLE_NORMAL);
+//			if (mShuffleMode != SHUFFLE_NONE) {
+//				setShuffleMode(SHUFFLE_NONE);
+//			}
+		}else if(mRepeatMode==SHUFFLE_NORMAL){
 			setRepeatMode(REPEAT_CURRENT);
-			if (mShuffleMode != SHUFFLE_NONE) {
-				setShuffleMode(SHUFFLE_NONE);
-			}
 		} else {
 			setRepeatMode(REPEAT_NONE);
 		}
@@ -2280,17 +2278,17 @@ public class PlayerService extends Service {
 	/**
 	 * Cycles through the different shuffle modes
 	 */
-	private void cycleShuffle() {
-		if (mShuffleMode == SHUFFLE_NONE) {
-			setShuffleMode(SHUFFLE_NORMAL);
-			if (mRepeatMode == REPEAT_CURRENT) {
-				setRepeatMode(REPEAT_ALL);
-			}
-		} else if (mShuffleMode == SHUFFLE_NORMAL
-				|| mShuffleMode == SHUFFLE_AUTO) {
-			setShuffleMode(SHUFFLE_NONE);
-		}
-	}
+//	private void cycleShuffle() {
+//		if (mShuffleMode == SHUFFLE_NONE) {
+//			setShuffleMode(SHUFFLE_NORMAL);
+//			if (mRepeatMode == REPEAT_CURRENT) {
+//				setRepeatMode(REPEAT_ALL);
+//			}
+//		} else if (mShuffleMode == SHUFFLE_NORMAL
+//				|| mShuffleMode == SHUFFLE_AUTO) {
+//			setShuffleMode(SHUFFLE_NONE);
+//		}
+//	}
 
 	/**
 	 * @return The album art for the current album.

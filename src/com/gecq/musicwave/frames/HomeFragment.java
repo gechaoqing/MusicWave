@@ -43,15 +43,14 @@ public class HomeFragment extends Fragment {
     public List<HomeGridItem> getItems() {
 		if (items == null) {
 			items = new ArrayList<HomeGridItem>();
-			items.add(new HomeGridItem("全部歌曲", "a", new AllMusicFragment(this)));
-			items.add(new HomeGridItem("最近听过", "r", null));
-			items.add(new HomeGridItem("我的歌单", "m", null));
-			items.add(new HomeGridItem("音效", "e", null));
-			items.add(new HomeGridItem("扫描歌曲", "c", new ScanFragment(this)));
-			items.add(new HomeGridItem("设置", "d", null));
+			items.add(new HomeGridItem("全部歌曲", getString(R.string.icon_all_songs), new AllMusicFragment(this)));
+			items.add(new HomeGridItem("最近听过", getString(R.string.icon_recent_listen), null));
+			items.add(new HomeGridItem("我的歌单", getString(R.string.icon_play_list_mine), null));
+			items.add(new HomeGridItem("音效", getString(R.string.icon_music_effect), null));
+			items.add(new HomeGridItem("扫描歌曲", getString(R.string.icon_scan_songs), new ScanFragment(this)));
+			items.add(new HomeGridItem("设置", getString(R.string.icon_setting), null));
+			
 		}
 		return items;
 	}
-    
-    
 }
