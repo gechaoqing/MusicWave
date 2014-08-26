@@ -4,6 +4,8 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.formats.Mp3;
@@ -16,6 +18,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
+import android.support.v4.util.LongSparseArray;
+import android.util.SparseArray;
+import android.widget.ImageView;
 
 public class ArtWork {
 	
@@ -38,6 +43,40 @@ public class ArtWork {
 //			msg.obj=result;
 //			msg.sendToTarget();
 		}
+	}
+	
+	public static class AsyncArtWork extends AsyncTask<Integer, Integer, Bitmap>{
+//		private SparseArray<SoftReference<Bitmap>> imageCache;
+		Context context;
+		private final WeakReference<ImageView> mImageReference;
+		long sid,aid;
+		public AsyncArtWork(final Context context,ImageView iv,long song_id,long album_id) {
+			this.context=context;
+			sid=song_id;
+			aid=album_id;
+			mImageReference=new WeakReference<ImageView>(iv);
+//			imageCache = new SparseArray<SoftReference<Bitmap>>();
+		}
+		@Override
+		protected Bitmap doInBackground(Integer... params) {
+			Bitmap result=getArtwork(context,sid,aid,true);
+			mImageReference.get().setImageBitmap(result);
+			return result;
+		}
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			super.onPostExecute(result);
+			
+		}
+	}
+	
+	public static class AsyncArtSub extends AsyncArtWork{
+
+		public AsyncArtSub(Context context, ImageView iv, long song_id,
+				long album_id) {
+			super(context, iv, song_id, album_id);
+		}
+		
 	}
 	
 	public static Bitmap getArtwork(Context context, long song_id,

@@ -3,14 +3,15 @@ package com.gecq.musicwave.frames;
 import java.util.List;
 
 import com.gecq.musicwave.R;
+import com.gecq.musicwave.activity.MusicStateListener;
 import com.gecq.musicwave.activity.MusicWaveActivity;
 import com.gecq.musicwave.adapters.AllSongAdapter;
 import com.gecq.musicwave.loaders.SongLoader;
-import com.gecq.musicwave.models.HomeGridItem;
 import com.gecq.musicwave.models.Song;
 import com.gecq.musicwave.utils.MusicUtils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -28,7 +29,7 @@ import android.widget.TextView;
  * Created by chaoqing on 14-8-8.
  */
 public class AllMusicFragment extends MusicWaveFragment implements
-		LoaderCallbacks<List<Song>> {
+		LoaderCallbacks<List<Song>>,MusicStateListener {
 	private ListView allMusic;
 	private AllSongAdapter adapter;
 	private View mRootView;
@@ -68,7 +69,7 @@ public class AllMusicFragment extends MusicWaveFragment implements
 
 	@Override
 	public int getType() {
-		return HomeGridItem.HOME_MENU_ALL;
+		return R.string.all_music;
 	}
 
 	@Override
@@ -138,5 +139,33 @@ public class AllMusicFragment extends MusicWaveFragment implements
 	public void onLoaderReset(Loader<List<Song>> arg0) {
 
 	}
+
+	/**
+     * True if the list should execute {@code #restartLoader()}.
+     */
+    private boolean mShouldRefresh = false;
+	@Override
+	public void restartLoader() {
+		 // Update the list when the user deletes any items
+        if (mShouldRefresh) {
+            getLoaderManager().restartLoader(LOADER, null, this);
+        }
+        mShouldRefresh = false;
+	}
+
+	@Override
+	public void onMetaChanged() {
+		adapter.notifyDataSetChanged();
+	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onAttach(final Activity activity) {
+        super.onAttach(activity);
+        // Register the music status listener
+        ((MusicWaveActivity)activity).setMusicStateListenerListener(this);
+    }
 
 }

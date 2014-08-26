@@ -25,9 +25,9 @@ public class ProgressBarThread extends Thread {
 			} catch (Exception e) {
 				return;
 			}
-			final Intent intent = new Intent(PlayerService.UPDATE_PROGRESS);
-			intent.putExtra(PlayerService.UPDATE_PROGRESS_POS, position);
-			ps.sendStickyBroadcast(intent);
+//			final Intent intent = new Intent(PlayerService.UPDATE_PROGRESS);
+//			intent.putExtra(PlayerService.UPDATE_PROGRESS_POS, position);
+//			ps.sendStickyBroadcast(intent);
 		}
 		interrupt();
 	}

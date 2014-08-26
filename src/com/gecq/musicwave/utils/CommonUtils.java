@@ -11,13 +11,19 @@
 
 package com.gecq.musicwave.utils;
 
+
+import com.gecq.musicwave.cache.ImageCache;
+import com.gecq.musicwave.cache.ImageFetcher;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -81,6 +87,18 @@ public final class CommonUtils {
     public static final boolean isLandscape(final Context context) {
         final int orientation = context.getResources().getConfiguration().orientation;
         return orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+    
+    /**
+     * Creates a new instance of the {@link ImageCache} and {@link ImageFetcher}
+     * 
+     * @param activity The {@link Activity} to use.
+     * @return A new {@link ImageFetcher} used to fetch images asynchronously.
+     */
+    public static final ImageFetcher getImageFetcher(final FragmentActivity activity) {
+        final ImageFetcher imageFetcher = ImageFetcher.getInstance(activity);
+        imageFetcher.setImageCache(ImageCache.findOrCreateCache(activity));
+        return imageFetcher;
     }
 
     /**

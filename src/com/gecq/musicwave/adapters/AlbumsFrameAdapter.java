@@ -1,18 +1,19 @@
 package com.gecq.musicwave.adapters;
 
-import com.gecq.musicwave.R;
-import com.gecq.musicwave.models.Artist;
-import com.gecq.musicwave.ui.MusicHolder;
-import com.gecq.musicwave.ui.MusicHolder.DataHolder;
-import com.gecq.musicwave.utils.MusicUtils;
-
-import android.content.Context;
+import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-public class SingerFrameAdapter extends ArrayAdapter<Artist> {
+import com.gecq.musicwave.cache.ImageFetcher;
+import com.gecq.musicwave.models.Album;
+import com.gecq.musicwave.ui.MusicHolder;
+import com.gecq.musicwave.ui.MusicHolder.DataHolder;
+import com.gecq.musicwave.utils.CommonUtils;
+
+public class AlbumsFrameAdapter extends ArrayAdapter<Album>{
 	/**
      * Number of views (ImageView and TextView)
      */
@@ -22,18 +23,25 @@ public class SingerFrameAdapter extends ArrayAdapter<Artist> {
 	 */
 	private final int mLayoutId;
 	/**
-	 * Used to cache the artist info
+	 * Used to cache the album info
 	 */
 	private DataHolder[] mData;
-
-	public SingerFrameAdapter(Context context, int resource) {
-		super(context, resource);
-		mLayoutId = resource;
+	
+	private final ImageFetcher mImageFetcher;
+	public AlbumsFrameAdapter(final FragmentActivity activity, int resource) {
+		super(activity, resource);
+		mLayoutId=resource;
+		mImageFetcher=CommonUtils.getImageFetcher(activity);
 	}
-
+	
+	private Handler handler=null;
+		
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		MusicHolder holder;
+		final MusicHolder holder;
+		if(handler==null){
+			handler=new Handler();
+		}
 		if (convertView == null) {
 			convertView = LayoutInflater.from(getContext()).inflate(mLayoutId,
 					parent, false);
@@ -44,11 +52,14 @@ public class SingerFrameAdapter extends ArrayAdapter<Artist> {
 		}
 		// Retrieve the data holder
 		final DataHolder dataHolder = mData[position];
-		// Set each artist name (line one)
+		mImageFetcher.loadAlbumImage(dataHolder.mLineTwo, dataHolder.mLineOne, dataHolder.mItemId,
+                holder.mImage.get());
+		// Set each album name (line one)
 		holder.mLineOne.get().setText(dataHolder.mLineOne);
 		// Set the number of albums (line two)
 		holder.mLineTwo.get().setText(dataHolder.mLineTwo);
-		holder.mLineThree.get().setText(dataHolder.mLineThree);
+		
+//		holder.mLineThree.get().setText(dataHolder.mLineThree);
 		return convertView;
 	}
 	
@@ -78,21 +89,17 @@ public class SingerFrameAdapter extends ArrayAdapter<Artist> {
     public void buildCache() {
         mData = new DataHolder[getCount()];
         for (int i = 0; i < getCount(); i++) {
-            // Build the artist
-            final Artist artist = getItem(i);
+            // Build the album
+            final Album album = getItem(i);
 
             // Build the data holder
             mData[i] = new DataHolder();
             // Artist Id
-            mData[i].mItemId = artist.mArtistId;
+            mData[i].mItemId = album.mAlbumId;
             // Artist names (line one)
-            mData[i].mLineOne = artist.mArtistName;
-            // Number of albums (line two)
-            mData[i].mLineTwo = MusicUtils.makeLabel(getContext(),
-                    R.plurals.Nalbums, artist.mAlbumNumber);
-            // Number of songs (line three)
-            mData[i].mLineThree = MusicUtils.makeLabel(getContext(),
-                    R.plurals.Nsongs, artist.mSongNumber);
+            mData[i].mLineOne = album.mAlbumName;
+//            // Number of albums (line two)
+            mData[i].mLineTwo = album.mArtistName;
         }
     }
 
@@ -106,7 +113,7 @@ public class SingerFrameAdapter extends ArrayAdapter<Artist> {
 
 	@Override
 	public long getItemId(int position) {
-		return getItem(position).mArtistId;
+		return getItem(position).mAlbumId;
 	}
 
 }

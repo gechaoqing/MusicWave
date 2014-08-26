@@ -2,6 +2,12 @@ package com.gecq.musicwave.frames;
 
 import java.util.List;
 
+import com.gecq.musicwave.R;
+import com.gecq.musicwave.activity.MusicWaveActivity;
+import com.gecq.musicwave.adapters.AlbumsFrameAdapter;
+import com.gecq.musicwave.loaders.AlbumLoader;
+import com.gecq.musicwave.models.Album;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -18,17 +24,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.gecq.musicwave.R;
-import com.gecq.musicwave.activity.MusicWaveActivity;
-import com.gecq.musicwave.adapters.SingerFrameAdapter;
-import com.gecq.musicwave.loaders.ArtistLoader;
-import com.gecq.musicwave.models.Artist;
-import com.gecq.musicwave.utils.MusicUtils;
-
-public class SingerFragment extends MusicWaveFragment implements
-		LoaderCallbacks<List<Artist>>, OnItemClickListener {
-
-	private SingerFrameAdapter mAdapter;
+public class AlbumsFragment extends MusicWaveFragment implements
+		LoaderCallbacks<List<Album>>, OnItemClickListener {
+	private AlbumsFrameAdapter mAdapter;
 	/**
 	 * LoaderCallbacks identifier
 	 */
@@ -43,23 +41,18 @@ public class SingerFragment extends MusicWaveFragment implements
 	 */
 	private View mRootView;
 
-	public SingerFragment(HomeFragment home) {
+	public AlbumsFragment(HomeFragment home) {
 		super(home);
-	}
-
-	@Override
-	public int getType() {
-		return R.string.singers;
 	}
 
 	@SuppressLint("InflateParams")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mRootView = inflater.inflate(R.layout.singer_frame, null, false);
-		mListView = (ListView)mRootView.findViewById(R.id.singers_list);
+		mRootView = inflater.inflate(R.layout.albums_frame, null, false);
+		mListView = (ListView) mRootView.findViewById(R.id.albums_list);
 		mListView.setAdapter(mAdapter);
-		Button backHome = (Button) mRootView.findViewById(R.id.singer_back);
+		Button backHome = (Button) mRootView.findViewById(R.id.back_home);
 		backHome.setTypeface(MusicWaveActivity.icon);
 		backHome.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -77,14 +70,15 @@ public class SingerFragment extends MusicWaveFragment implements
 		});
 		return mRootView;
 	}
-	
+
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Create the adpater
-		mAdapter = new SingerFrameAdapter(getActivity(), R.layout.list_item_simple);
+		mAdapter = new AlbumsFrameAdapter(getActivity(),
+				R.layout.list_item_normal);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,18 +92,24 @@ public class SingerFragment extends MusicWaveFragment implements
 	}
 
 	@Override
-	public Loader<List<Artist>> onCreateLoader(int arg0, Bundle arg1) {
-		return new ArtistLoader(getActivity());
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+
 	}
 
 	@Override
-	public void onLoadFinished(Loader<List<Artist>> loader, List<Artist> data) {
+	public Loader<List<Album>> onCreateLoader(int arg0, Bundle arg1) {
+		return new AlbumLoader(getActivity());
+	}
+
+	@Override
+	public void onLoadFinished(Loader<List<Album>> arg0, List<Album> data) {
 		// Check for any errors
 		if (data.isEmpty()) {
 			// Set the empty text
 			final TextView empty = (TextView) mRootView
 					.findViewById(R.id.empty);
-			empty.setText(getString(R.string.empty_artist));
+			empty.setText(getString(R.string.empty_album));
 			mListView.setEmptyView(empty);
 			return;
 		}
@@ -117,50 +117,21 @@ public class SingerFragment extends MusicWaveFragment implements
 		// Start fresh
 		mAdapter.unload();
 		// Add the data to the adpater
-		for (final Artist artist : data) {
-			mAdapter.add(artist);
+		for (final Album album : data) {
+			mAdapter.add(album);
 		}
 		// Build the cache
 		mAdapter.buildCache();
 	}
 
 	@Override
-	public void onLoaderReset(Loader<List<Artist>> arg0) {
+	public void onLoaderReset(Loader<List<Album>> arg0) {
 
-	}
-
-	/**
-	 * Scrolls the list to the currently playing artist when the user touches
-	 * the header in the {@link TitlePageIndicator}.
-	 */
-	public void scrollToCurrentArtist() {
-		final int currentArtistPosition = getItemPositionByArtist();
-		if (currentArtistPosition != 0) {
-			mListView.setSelection(currentArtistPosition);
-		}
-	}
-
-	/**
-	 * @return The position of an item in the list or grid based on the name of
-	 *         the currently playing artist.
-	 */
-	private int getItemPositionByArtist() {
-		final long artistId = MusicUtils.getCurrentArtistId();
-		if (mAdapter == null) {
-			return 0;
-		}
-		for (int i = 0; i < mAdapter.getCount(); i++) {
-			if (mAdapter.getItem(i).mArtistId == artistId) {
-				return i;
-			}
-		}
-		return 0;
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-
+	public int getType() {
+		return R.string.albums;
 	}
 
 	/**

@@ -2,7 +2,6 @@ package com.gecq.musicwave.frames;
 
 import com.gecq.musicwave.R;
 import com.gecq.musicwave.activity.MusicWaveActivity;
-import com.gecq.musicwave.models.HomeGridItem;
 import com.gecq.musicwave.utils.MediaScanner;
 
 import android.annotation.SuppressLint;
@@ -76,7 +75,7 @@ public class ScanFragment extends MusicWaveFragment {
 							R.animator.side_out_right);
 					AllMusicFragment all=(AllMusicFragment) home.getItems().get(0).getTo();
 					transaction.replace(R.id.home_content, all);
-					MusicWaveActivity.currentFrame = HomeGridItem.HOME_MENU_ALL;
+					MusicWaveActivity.currentFrame = R.string.scan_songs;
 					transaction.commit();
 					break;
 				case 2:
@@ -132,7 +131,7 @@ public class ScanFragment extends MusicWaveFragment {
 
 	@Override
 	public int getType() {
-		return HomeGridItem.HOME_MENU_SCAN;
+		return R.string.scan_songs;
 	}
 
 	@Override

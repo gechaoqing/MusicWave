@@ -4,13 +4,13 @@ import com.gecq.musicwave.frames.MusicWaveFragment;
 
 
 public class HomeGridItem {
-	public static final int HOME_MENU_ALL = 1;
-	public static final int HOME_MENU_RECENT = 2;
-	public static final int HOME_MENU_PLAYLIST = 3;
-	public static final int HOME_MENU_EFFECTS = 4;
-	public static final int HOME_MENU_SCAN=5;
-	public static final int HOME_MENU_SETTING=6;
-	public static final int HOME_MENU_SINGER=7;
+//	public static final int HOME_MENU_ALL = 1;
+//	public static final int HOME_MENU_RECENT = 2;
+//	public static final int HOME_MENU_PLAYLIST = 3;
+//	public static final int HOME_MENU_EFFECTS = 4;
+//	public static final int HOME_MENU_SCAN=5;
+//	public static final int HOME_MENU_SETTING=6;
+//	public static final int HOME_MENU_SINGER=7;
 	private String name;
 	private String icon;
 	private int action;

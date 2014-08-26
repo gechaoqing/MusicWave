@@ -12,6 +12,7 @@ import com.gecq.musicwave.utils.ArtWork;
 import com.gecq.musicwave.utils.Lists;
 import com.gecq.musicwave.utils.MusicUtils;
 
+import android.media.MediaPlayer.OnCompletionListener;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -30,7 +31,6 @@ import android.media.MediaPlayer;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.audiofx.AudioEffect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -48,7 +48,7 @@ import android.util.Log;
 
 public class PlayerService extends Service {
 	private static final String TAG = "PlayerService";
-	private static final boolean D = false;
+	private static final boolean D = true;
 
 	/**
 	 * Indicates that the music has paused or resumed
@@ -69,14 +69,16 @@ public class PlayerService extends Service {
 	 * Indicates the queue has been updated
 	 */
 	public static final String QUEUE_CHANGED = "com.gecq.musicwave.queuechanged";
-	
+
 	/**
-	 * update progress bar 
+	 * update progress bar
 	 */
-	public static final String UPDATE_PROGRESS="com.gecq.musicwave.updateprogress";
-	
-	public static final String UPDATE_PROGRESS_POS="com.gecq.musicwave.updateprogress.pos";
-	public static final String UPDATE_PROGRESS_MAX="com.gecq.musicwave.updateprogress.max";
+	public static final String UPDATE_PROGRESS = "com.gecq.musicwave.updateprogress";
+
+	// public static final String
+	// UPDATE_PROGRESS_POS="com.gecq.musicwave.updateprogress.pos";
+	// public static final String
+	// UPDATE_PROGRESS_MAX="com.gecq.musicwave.updateprogress.max";
 
 	/**
 	 * Indicates the repeat mode chaned
@@ -180,7 +182,7 @@ public class PlayerService extends Service {
 
 	private static final int IDCOLIDX = 0;
 
-	private static final boolean mCompatMode = Build.VERSION.SDK_INT < 16;
+//	private static final boolean mCompatMode = Build.VERSION.SDK_INT < 16;
 
 	/**
 	 * Moves a list to the front of the queue
@@ -197,17 +199,15 @@ public class PlayerService extends Service {
 	 */
 	public static final int LAST = 3;
 
-//	/**
-//	 * Shuffles no songs, turns shuffling off
-//	 */
-//	public static final int SHUFFLE_NONE = 0;
+	// /**
+	// * Shuffles no songs, turns shuffling off
+	// */
+	// public static final int SHUFFLE_NONE = 0;
 
-	
-
-//	/**
-//	 * Party shuffle
-//	 */
-//	public static final int SHUFFLE_AUTO = 2;
+	// /**
+	// * Party shuffle
+	// */
+	// public static final int SHUFFLE_AUTO = 2;
 
 	/**
 	 * Turns repeat off
@@ -223,7 +223,7 @@ public class PlayerService extends Service {
 	 * Repeats all the tracks in a list
 	 */
 	public static final int REPEAT_ALL = 2;
-	
+
 	/**
 	 * Shuffles all songs
 	 */
@@ -317,9 +317,9 @@ public class PlayerService extends Service {
 			'4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
 	/**
-     * Service stub
-     */
-    private final IBinder mBinder = new ServiceStub(this);
+	 * Service stub
+	 */
+	private final IBinder mBinder = new ServiceStub(this);
 	/**
 	 * The media player
 	 */
@@ -378,7 +378,7 @@ public class PlayerService extends Service {
 
 	private int mMediaMountedCount = 0;
 
-//	private int mShuffleMode = SHUFFLE_NONE;
+	// private int mShuffleMode = SHUFFLE_NONE;
 
 	private int mRepeatMode = REPEAT_NONE;
 
@@ -463,7 +463,7 @@ public class PlayerService extends Service {
 	/**
 	 * Lock screen controls
 	 */
-//	private RemoteControlClient mRemoteControlClient;
+	// private RemoteControlClient mRemoteControlClient;
 
 	private ComponentName mMediaButtonReceiverComponent;
 
@@ -560,41 +560,44 @@ public class PlayerService extends Service {
 	 * Initializes the remote control client
 	 */
 	private void setUpRemoteControlClient() {
-//		final Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
-//		mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
-//		mRemoteControlClient = new RemoteControlClient(
-//				PendingIntent.getBroadcast(getApplicationContext(), 0,
-//						mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
-//		mAudioManager.registerRemoteControlClient(mRemoteControlClient);
+		// final Intent mediaButtonIntent = new
+		// Intent(Intent.ACTION_MEDIA_BUTTON);
+		// mediaButtonIntent.setComponent(mMediaButtonReceiverComponent);
+		// mRemoteControlClient = new RemoteControlClient(
+		// PendingIntent.getBroadcast(getApplicationContext(), 0,
+		// mediaButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+		// mAudioManager.registerRemoteControlClient(mRemoteControlClient);
 
 		// Flags for the media transport control that this client supports.
-//		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
-//				| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
-//				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
-//				| RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
-//				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
-//				| RemoteControlClient.FLAG_KEY_MEDIA_STOP;
+		// int flags = RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS
+		// | RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+		// | RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+		// | RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
+		// | RemoteControlClient.FLAG_KEY_MEDIA_PLAY_PAUSE
+		// | RemoteControlClient.FLAG_KEY_MEDIA_STOP;
 
-//		if (CommonUtils.hasJellyBeanMR2()) {
-//			flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
-//
-//			mRemoteControlClient
-//					.setOnGetPlaybackPositionListener(new RemoteControlClient.OnGetPlaybackPositionListener() {
-//						@Override
-//						public long onGetPlaybackPosition() {
-//							return position();
-//						}
-//					});
-//			mRemoteControlClient
-//					.setPlaybackPositionUpdateListener(new RemoteControlClient.OnPlaybackPositionUpdateListener() {
-//						@Override
-//						public void onPlaybackPositionUpdate(long newPositionMs) {
-//							seek(newPositionMs);
-//						}
-//					});
-//		}
-//
-//		mRemoteControlClient.setTransportControlFlags(flags);
+		// if (CommonUtils.hasJellyBeanMR2()) {
+		// flags |= RemoteControlClient.FLAG_KEY_MEDIA_POSITION_UPDATE;
+		//
+		// mRemoteControlClient
+		// .setOnGetPlaybackPositionListener(new
+		// RemoteControlClient.OnGetPlaybackPositionListener() {
+		// @Override
+		// public long onGetPlaybackPosition() {
+		// return position();
+		// }
+		// });
+		// mRemoteControlClient
+		// .setPlaybackPositionUpdateListener(new
+		// RemoteControlClient.OnPlaybackPositionUpdateListener() {
+		// @Override
+		// public void onPlaybackPositionUpdate(long newPositionMs) {
+		// seek(newPositionMs);
+		// }
+		// });
+		// }
+		//
+		// mRemoteControlClient.setTransportControlFlags(flags);
 	}
 
 	/**
@@ -623,8 +626,8 @@ public class PlayerService extends Service {
 
 		// Remove the audio focus listener and lock screen controls
 		mAudioManager.abandonAudioFocus(mAudioFocusListener);
-//		if(!mCompatMode)
-//		  mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
+		// if(!mCompatMode)
+		// mAudioManager.unregisterRemoteControlClient(mRemoteControlClient);
 
 		// Remove any callbacks from the handler
 		mPlayerHandler.removeCallbacksAndMessages(null);
@@ -738,14 +741,14 @@ public class PlayerService extends Service {
 			releaseServiceUiAndStop();
 		} else if (REPEAT_ACTION.equals(action)) {
 			cycleRepeat();
-		} 
-//		else if (SHUFFLE_ACTION.equals(action)) {
-//			cycleShuffle();
-//		} 
-		else if(Intent.ACTION_HEADSET_PLUG.equals(action)){
-			 if(intent.getIntExtra("state", 0) == 1){  
-				 
-			 }
+		}
+		// else if (SHUFFLE_ACTION.equals(action)) {
+		// cycleShuffle();
+		// }
+		else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
+			if (intent.getIntExtra("state", 0) == 1) {
+
+			}
 		}
 	}
 
@@ -1001,7 +1004,7 @@ public class PlayerService extends Service {
 
 	private Cursor openCursorAndGoToFirst(Uri uri, String[] projection,
 			String selection, String[] selectionArgs) {
-		Cursor c =getContentResolver().query(uri, projection, selection,
+		Cursor c = getContentResolver().query(uri, projection, selection,
 				selectionArgs, null);
 		if (c == null) {
 			return null;
@@ -1133,10 +1136,7 @@ public class PlayerService extends Service {
 					return -1;
 				}
 			}
-			int skip = 0;
-			if (mRepeatMode == SHUFFLE_NORMAL) {
-				skip = mShuffler.nextInt(numUnplayed);
-			}
+			int skip = mShuffler.nextInt(numUnplayed);
 			int cnt = -1;
 			while (true) {
 				while (tracks[++cnt] < 0) {
@@ -1147,11 +1147,14 @@ public class PlayerService extends Service {
 					break;
 				}
 			}
-			return cnt;
-		} else if (mRepeatMode == SHUFFLE_NORMAL) {
 			doAutoShuffleUpdate();
-			return mPlayPos + 1;
-		} else {
+			return cnt;
+		}
+		// else if (mRepeatMode == SHUFFLE_NORMAL) {
+		// doAutoShuffleUpdate();
+		// return mPlayPos + 1;
+		// }
+		else {
 			if (mPlayPos >= mPlayListLen - 1) {
 				if (mRepeatMode == REPEAT_NONE && !force) {
 					return -1;
@@ -1240,6 +1243,7 @@ public class PlayerService extends Service {
 			mPlayList[mPlayListLen++] = mAutoShuffleList[idx];
 			notify = true;
 		}
+		System.out.println(" QUEUE_CHANGED !!!!!!!");
 		if (notify) {
 			notifyChange(QUEUE_CHANGED);
 		}
@@ -1307,9 +1311,6 @@ public class PlayerService extends Service {
 		intent.putExtra("track", getTrackName());
 		intent.putExtra("playing", isPlaying());
 		intent.putExtra("isfavorite", isFavorite());
-		if(what.equals(META_CHANGED)){
-			intent.putExtra(UPDATE_PROGRESS_MAX, duration());
-		}
 		sendStickyBroadcast(intent);
 
 		final Intent musicIntent = new Intent(intent);
@@ -1342,10 +1343,10 @@ public class PlayerService extends Service {
 		}
 
 		// Update the app-widgets
-//		mAppWidgetSmall.notifyChange(this, what);
-//		mAppWidgetLarge.notifyChange(this, what);
-//		mAppWidgetLargeAlternate.notifyChange(this, what);
-//		mRecentWidgetProvider.notifyChange(this, what);
+		// mAppWidgetSmall.notifyChange(this, what);
+		// mAppWidgetLarge.notifyChange(this, what);
+		// mAppWidgetLargeAlternate.notifyChange(this, what);
+		// mRecentWidgetProvider.notifyChange(this, what);
 	}
 
 	/**
@@ -1355,48 +1356,50 @@ public class PlayerService extends Service {
 	 *            The broadcast
 	 */
 	private void updateRemoteControlClient(final String what) {
-//		int playState = mIsSupposedToBePlaying ? RemoteControlClient.PLAYSTATE_PLAYING
-//				: RemoteControlClient.PLAYSTATE_PAUSED;
-//
-//		if (CommonUtils.hasJellyBeanMR2()
-//				&& (what.equals(PLAYSTATE_CHANGED) || what
-//						.equals(POSITION_CHANGED))) {
-////			mRemoteControlClient.setPlaybackState(playState, position(), 1.0f);
-//		} else if (what.equals(PLAYSTATE_CHANGED)) {
-//			mRemoteControlClient.setPlaybackState(playState);
-//		} else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
-//			Bitmap albumArt = getAlbumArt();
-//			if (albumArt != null) {
-//				// RemoteControlClient wants to recycle the bitmaps thrown at
-//				// it, so we need
-//				// to make sure not to hand out our cache copy
-//				Bitmap.Config config = albumArt.getConfig();
-//				if (config == null) {
-//					config = Bitmap.Config.ARGB_8888;
-//				}
-//				albumArt = albumArt.copy(config, false);
-//			}
-//			mRemoteControlClient
-//					.editMetadata(true)
-//					.putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
-//							getArtistName())
-//					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
-//							getAlbumArtistName())
-//					.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM,
-//							getAlbumName())
-//					.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
-//							getTrackName())
-//					.putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
-//							duration())
-//					.putBitmap(
-//							RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
-//							albumArt).apply();
-//
-//			if (CommonUtils.hasJellyBeanMR2()) {
-//				mRemoteControlClient.setPlaybackState(playState, position(),
-//						1.0f);
-//			}
-//		}
+		// int playState = mIsSupposedToBePlaying ?
+		// RemoteControlClient.PLAYSTATE_PLAYING
+		// : RemoteControlClient.PLAYSTATE_PAUSED;
+		//
+		// if (CommonUtils.hasJellyBeanMR2()
+		// && (what.equals(PLAYSTATE_CHANGED) || what
+		// .equals(POSITION_CHANGED))) {
+		// // mRemoteControlClient.setPlaybackState(playState, position(),
+		// 1.0f);
+		// } else if (what.equals(PLAYSTATE_CHANGED)) {
+		// mRemoteControlClient.setPlaybackState(playState);
+		// } else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
+		// Bitmap albumArt = getAlbumArt();
+		// if (albumArt != null) {
+		// // RemoteControlClient wants to recycle the bitmaps thrown at
+		// // it, so we need
+		// // to make sure not to hand out our cache copy
+		// Bitmap.Config config = albumArt.getConfig();
+		// if (config == null) {
+		// config = Bitmap.Config.ARGB_8888;
+		// }
+		// albumArt = albumArt.copy(config, false);
+		// }
+		// mRemoteControlClient
+		// .editMetadata(true)
+		// .putString(MediaMetadataRetriever.METADATA_KEY_ARTIST,
+		// getArtistName())
+		// .putString(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST,
+		// getAlbumArtistName())
+		// .putString(MediaMetadataRetriever.METADATA_KEY_ALBUM,
+		// getAlbumName())
+		// .putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+		// getTrackName())
+		// .putLong(MediaMetadataRetriever.METADATA_KEY_DURATION,
+		// duration())
+		// .putBitmap(
+		// RemoteControlClient.MetadataEditor.BITMAP_KEY_ARTWORK,
+		// albumArt).apply();
+		//
+		// if (CommonUtils.hasJellyBeanMR2()) {
+		// mRemoteControlClient.setPlaybackState(playState, position(),
+		// 1.0f);
+		// }
+		// }
 	}
 
 	/**
@@ -1455,7 +1458,7 @@ public class PlayerService extends Service {
 			editor.putLong("seekpos", mPlayer.position());
 		}
 		editor.putInt("repeatmode", mRepeatMode);
-//		editor.putInt("shufflemode", mShuffleMode);
+		// editor.putInt("shufflemode", mShuffleMode);
 		editor.apply();
 	}
 
@@ -1529,16 +1532,17 @@ public class PlayerService extends Service {
 			}
 
 			int repmode = mPreferences.getInt("repeatmode", REPEAT_NONE);
-			if (repmode != REPEAT_ALL && repmode != REPEAT_CURRENT&&repmode!=SHUFFLE_NORMAL) {
+			if (repmode != REPEAT_ALL && repmode != REPEAT_CURRENT
+					&& repmode != SHUFFLE_NORMAL) {
 				repmode = REPEAT_NONE;
 			}
-//			mRepeatMode = repmode;
+			// mRepeatMode = repmode;
 
-//			int shufmode = mPreferences.getInt("shufflemode", SHUFFLE_NONE);
-//			if (shufmode != SHUFFLE_AUTO && shufmode != SHUFFLE_NORMAL) {
-//				shufmode = SHUFFLE_NONE;
-//			}
-			if (repmode ==SHUFFLE_NORMAL) {
+			// int shufmode = mPreferences.getInt("shufflemode", SHUFFLE_NONE);
+			// if (shufmode != SHUFFLE_AUTO && shufmode != SHUFFLE_NORMAL) {
+			// shufmode = SHUFFLE_NONE;
+			// }
+			if (repmode == SHUFFLE_NORMAL) {
 				q = mPreferences.getString("history", "");
 				qlen = q != null ? q.length() : 0;
 				if (qlen > 1) {
@@ -1609,7 +1613,9 @@ public class PlayerService extends Service {
 					updateCursor(uri);
 
 				} else if (id != -1
-						&& path.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+						&& path.startsWith(Environment
+								.getExternalStorageDirectory()
+								.getAbsolutePath())) {
 					updateCursor(id);
 				} else {
 					String where = MediaStore.Audio.Media.DATA + "=?";
@@ -1938,9 +1944,9 @@ public class PlayerService extends Service {
 	 */
 	public void open(final long[] list, final int position) {
 		synchronized (this) {
-//			if (mShuffleMode == SHUFFLE_AUTO) {
-//				mShuffleMode = SHUFFLE_NORMAL;
-//			}
+			// if (mShuffleMode == SHUFFLE_AUTO) {
+			// mShuffleMode = SHUFFLE_NORMAL;
+			// }
 			final long oldId = getAudioId();
 			final int listlength = list.length;
 			boolean newlist = true;
@@ -2011,7 +2017,6 @@ public class PlayerService extends Service {
 				mIsSupposedToBePlaying = true;
 				notifyChange(PLAYSTATE_CHANGED);
 			}
-			new ProgressBarThread(duration,this).start();
 			cancelShutdown();
 			updateNotification();
 		} else if (mPlayListLen <= 0) {
@@ -2265,10 +2270,10 @@ public class PlayerService extends Service {
 			setRepeatMode(REPEAT_ALL);
 		} else if (mRepeatMode == REPEAT_ALL) {
 			setRepeatMode(SHUFFLE_NORMAL);
-//			if (mShuffleMode != SHUFFLE_NONE) {
-//				setShuffleMode(SHUFFLE_NONE);
-//			}
-		}else if(mRepeatMode==SHUFFLE_NORMAL){
+			// if (mShuffleMode != SHUFFLE_NONE) {
+			// setShuffleMode(SHUFFLE_NONE);
+			// }
+		} else if (mRepeatMode == SHUFFLE_NORMAL) {
 			setRepeatMode(REPEAT_CURRENT);
 		} else {
 			setRepeatMode(REPEAT_NONE);
@@ -2278,27 +2283,28 @@ public class PlayerService extends Service {
 	/**
 	 * Cycles through the different shuffle modes
 	 */
-//	private void cycleShuffle() {
-//		if (mShuffleMode == SHUFFLE_NONE) {
-//			setShuffleMode(SHUFFLE_NORMAL);
-//			if (mRepeatMode == REPEAT_CURRENT) {
-//				setRepeatMode(REPEAT_ALL);
-//			}
-//		} else if (mShuffleMode == SHUFFLE_NORMAL
-//				|| mShuffleMode == SHUFFLE_AUTO) {
-//			setShuffleMode(SHUFFLE_NONE);
-//		}
-//	}
+	// private void cycleShuffle() {
+	// if (mShuffleMode == SHUFFLE_NONE) {
+	// setShuffleMode(SHUFFLE_NORMAL);
+	// if (mRepeatMode == REPEAT_CURRENT) {
+	// setRepeatMode(REPEAT_ALL);
+	// }
+	// } else if (mShuffleMode == SHUFFLE_NORMAL
+	// || mShuffleMode == SHUFFLE_AUTO) {
+	// setShuffleMode(SHUFFLE_NONE);
+	// }
+	// }
 
 	/**
 	 * @return The album art for the current album.
 	 */
 	public Bitmap getAlbumArt() {
 		// Return the cached artwork
-		
-		final Bitmap bitmap =ArtWork.getArtwork(getApplicationContext(), getAudioId(), getAlbumId(), true);
-				// mImageFetcher.getArtwork(getAlbumName(),
-				//getAlbumId(), getArtistName());
+
+		final Bitmap bitmap = ArtWork.getArtwork(getApplicationContext(),
+				getAudioId(), getAlbumId(), true);
+		// mImageFetcher.getArtwork(getAlbumName(),
+		// getAlbumId(), getArtistName());
 		return bitmap;
 	}
 
@@ -2497,13 +2503,13 @@ public class PlayerService extends Service {
 	private WakeLock mWakeLock;
 
 	private static final class MultiPlayer implements
-			MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+			MediaPlayer.OnErrorListener, OnCompletionListener {
 
 		private final WeakReference<PlayerService> mService;
 
-		private MediaPlayer mCurrentMediaPlayer = new MediaPlayer();
+		private CompatMediaPlayer mCurrentMediaPlayer = new CompatMediaPlayer();
 
-		private MediaPlayer mNextMediaPlayer;
+		private CompatMediaPlayer mNextMediaPlayer;
 
 		private Handler mHandler;
 
@@ -2580,7 +2586,7 @@ public class PlayerService extends Service {
 		@SuppressLint("NewApi")
 		public void setNextDataSource(final String path) {
 			try {
-				setNextMediaPlayer(null);
+				mCurrentMediaPlayer.setNextMediaPlayer(null);
 			} catch (IllegalArgumentException e) {
 				Log.i(TAG, "Next media player is current one, continuing");
 			} catch (IllegalStateException e) {
@@ -2594,12 +2600,12 @@ public class PlayerService extends Service {
 			if (path == null) {
 				return;
 			}
-			mNextMediaPlayer = new MediaPlayer();
+			mNextMediaPlayer = new CompatMediaPlayer();;
 			mNextMediaPlayer.setWakeMode(mService.get(),
 					PowerManager.PARTIAL_WAKE_LOCK);
 			mNextMediaPlayer.setAudioSessionId(getAudioSessionId());
 			if (setDataSourceImpl(mNextMediaPlayer, path)) {
-				setNextMediaPlayer(mNextMediaPlayer);
+				mCurrentMediaPlayer.setNextMediaPlayer(mNextMediaPlayer);
 			} else {
 				if (mNextMediaPlayer != null) {
 					mNextMediaPlayer.release();
@@ -2685,13 +2691,6 @@ public class PlayerService extends Service {
 			return whereto;
 		}
 
-		private void setNextMediaPlayer(MediaPlayer next) {
-			if (mCompatMode) {
-				mNextMediaPlayer = next;
-			} else {
-				mCurrentMediaPlayer.setNextMediaPlayer(next);
-			}
-		}
 
 		/**
 		 * Sets the volume on this player.
@@ -2709,6 +2708,7 @@ public class PlayerService extends Service {
 		 * @param sessionId
 		 *            The audio session ID
 		 */
+		@SuppressWarnings("unused")
 		public void setAudioSessionId(final int sessionId) {
 			mCurrentMediaPlayer.setAudioSessionId(sessionId);
 		}
@@ -2732,7 +2732,7 @@ public class PlayerService extends Service {
 			case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
 				mIsInitialized = false;
 				mCurrentMediaPlayer.release();
-				mCurrentMediaPlayer = new MediaPlayer();
+				mCurrentMediaPlayer = new CompatMediaPlayer();
 				mCurrentMediaPlayer.setWakeMode(mService.get(),
 						PowerManager.PARTIAL_WAKE_LOCK);
 				mHandler.sendMessageDelayed(
@@ -2761,295 +2761,361 @@ public class PlayerService extends Service {
 			}
 		}
 	}
-	
+
+	@SuppressLint("NewApi")
+	private static final class CompatMediaPlayer extends MediaPlayer implements	OnCompletionListener {
+
+		private boolean mCompatMode = true;
+
+		private MediaPlayer mNextPlayer;
+
+		private OnCompletionListener mCompletion;
+
+		/**
+		 * Constructor of <code>CompatMediaPlayer</code>
+		 */
+		public CompatMediaPlayer() {
+			try {
+				MediaPlayer.class.getMethod("setNextMediaPlayer",
+						MediaPlayer.class);
+				mCompatMode = false;
+			} catch (final NoSuchMethodException e) {
+				mCompatMode = true;
+				super.setOnCompletionListener(this);
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setNextMediaPlayer(final MediaPlayer next) {
+			if (mCompatMode) {
+				mNextPlayer = next;
+			} else {
+				super.setNextMediaPlayer(next);
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setOnCompletionListener(final OnCompletionListener listener) {
+			if (mCompatMode) {
+				mCompletion = listener;
+			} else {
+				super.setOnCompletionListener(listener);
+			}
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void onCompletion(final MediaPlayer mp) {
+			if (mNextPlayer != null) {
+				// SystemClock.sleep(25);
+				mNextPlayer.start();
+			}
+			mCompletion.onCompletion(this);
+		}
+	}
+
 	private static final class ServiceStub extends IMusicWaveService.Stub {
 
-        private final WeakReference<PlayerService> mService;
+		private final WeakReference<PlayerService> mService;
 
-        private ServiceStub(final PlayerService service) {
-            mService = new WeakReference<PlayerService>(service);
-        }
+		private ServiceStub(final PlayerService service) {
+			mService = new WeakReference<PlayerService>(service);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void openFile(final String path) throws RemoteException {
-            mService.get().openFile(path);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void openFile(final String path) throws RemoteException {
+			mService.get().openFile(path);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void open(final long[] list, final int position) throws RemoteException {
-            mService.get().open(list, position);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void open(final long[] list, final int position)
+				throws RemoteException {
+			mService.get().open(list, position);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void stop() throws RemoteException {
-            mService.get().stop();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void stop() throws RemoteException {
+			mService.get().stop();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void pause() throws RemoteException {
-            mService.get().pause();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void pause() throws RemoteException {
+			mService.get().pause();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void play() throws RemoteException {
-            mService.get().play();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void play() throws RemoteException {
+			mService.get().play();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void prev() throws RemoteException {
-            mService.get().prev();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void prev() throws RemoteException {
+			mService.get().prev();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void next() throws RemoteException {
-            mService.get().gotoNext(true);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void next() throws RemoteException {
+			mService.get().gotoNext(true);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void enqueue(final long[] list, final int action) throws RemoteException {
-            mService.get().enqueue(list, action);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void enqueue(final long[] list, final int action)
+				throws RemoteException {
+			mService.get().enqueue(list, action);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setQueuePosition(final int index) throws RemoteException {
-            mService.get().setQueuePosition(index);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setQueuePosition(final int index) throws RemoteException {
+			mService.get().setQueuePosition(index);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setShuffleMode(final int shufflemode) throws RemoteException {
-            mService.get().setShuffleMode(shufflemode);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setShuffleMode(final int shufflemode)
+				throws RemoteException {
+			mService.get().setShuffleMode(shufflemode);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setRepeatMode(final int repeatmode) throws RemoteException {
-            mService.get().setRepeatMode(repeatmode);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void setRepeatMode(final int repeatmode) throws RemoteException {
+			mService.get().setRepeatMode(repeatmode);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void moveQueueItem(final int from, final int to) throws RemoteException {
-            mService.get().moveQueueItem(from, to);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void moveQueueItem(final int from, final int to)
+				throws RemoteException {
+			mService.get().moveQueueItem(from, to);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void toggleFavorite() throws RemoteException {
-            mService.get().toggleFavorite();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void toggleFavorite() throws RemoteException {
+			mService.get().toggleFavorite();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void refresh() throws RemoteException {
-            mService.get().refresh();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void refresh() throws RemoteException {
+			mService.get().refresh();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isFavorite() throws RemoteException {
-            return mService.get().isFavorite();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isFavorite() throws RemoteException {
+			return mService.get().isFavorite();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isPlaying() throws RemoteException {
-            return mService.get().isPlaying();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isPlaying() throws RemoteException {
+			return mService.get().isPlaying();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long[] getQueue() throws RemoteException {
-            return mService.get().getQueue();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long[] getQueue() throws RemoteException {
+			return mService.get().getQueue();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long duration() throws RemoteException {
-            return mService.get().duration();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long duration() throws RemoteException {
+			return mService.get().duration();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long position() throws RemoteException {
-            return mService.get().position();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long position() throws RemoteException {
+			return mService.get().position();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long seek(final long position) throws RemoteException {
-            return mService.get().seek(position);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long seek(final long position) throws RemoteException {
+			return mService.get().seek(position);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getAudioId() throws RemoteException {
-            return mService.get().getAudioId();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long getAudioId() throws RemoteException {
+			return mService.get().getAudioId();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getArtistId() throws RemoteException {
-            return mService.get().getArtistId();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long getArtistId() throws RemoteException {
+			return mService.get().getArtistId();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public long getAlbumId() throws RemoteException {
-            return mService.get().getAlbumId();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public long getAlbumId() throws RemoteException {
+			return mService.get().getAlbumId();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getArtistName() throws RemoteException {
-            return mService.get().getArtistName();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getArtistName() throws RemoteException {
+			return mService.get().getArtistName();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getTrackName() throws RemoteException {
-            return mService.get().getTrackName();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getTrackName() throws RemoteException {
+			return mService.get().getTrackName();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getAlbumName() throws RemoteException {
-            return mService.get().getAlbumName();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getAlbumName() throws RemoteException {
+			return mService.get().getAlbumName();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getPath() throws RemoteException {
-            return mService.get().getPath();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getPath() throws RemoteException {
+			return mService.get().getPath();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getQueuePosition() throws RemoteException {
-            return mService.get().getQueuePosition();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getQueuePosition() throws RemoteException {
+			return mService.get().getQueuePosition();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getShuffleMode() throws RemoteException {
-            return mService.get().getShuffleMode();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getShuffleMode() throws RemoteException {
+			return mService.get().getShuffleMode();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getRepeatMode() throws RemoteException {
-            return mService.get().getRepeatMode();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getRepeatMode() throws RemoteException {
+			return mService.get().getRepeatMode();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int removeTracks(final int first, final int last) throws RemoteException {
-            return mService.get().removeTracks(first, last);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int removeTracks(final int first, final int last)
+				throws RemoteException {
+			return mService.get().removeTracks(first, last);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int removeTrack(final long id) throws RemoteException {
-            return mService.get().removeTrack(id);
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int removeTrack(final long id) throws RemoteException {
+			return mService.get().removeTrack(id);
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getMediaMountedCount() throws RemoteException {
-            return mService.get().getMediaMountedCount();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getMediaMountedCount() throws RemoteException {
+			return mService.get().getMediaMountedCount();
+		}
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getAudioSessionId() throws RemoteException {
-            return mService.get().getAudioSessionId();
-        }
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public int getAudioSessionId() throws RemoteException {
+			return mService.get().getAudioSessionId();
+		}
 
-    }
+	}
 
 	@Override
-    public IBinder onBind(final Intent intent) {
-        if (D) Log.d(TAG, "Service bound, intent = " + intent);
-        cancelShutdown();
-        mServiceInUse = true;
-        return mBinder;
-    }
+	public IBinder onBind(final Intent intent) {
+		if (D)
+			Log.d(TAG, "Service bound, intent = " + intent);
+		cancelShutdown();
+		mServiceInUse = true;
+		return mBinder;
+	}
 
 }
