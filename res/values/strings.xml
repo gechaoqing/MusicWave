@@ -3,15 +3,16 @@
     <string name="app_name">乐浪</string>
     <string name="app_string">我的音乐</string>
     <string name="singer_img">播放歌曲图片</string>
-    <string name="add_play_list">新建歌单</string>
-    <string name="favourite_str">我的最爱</string>
+    
     <string name="all_music">全部歌曲</string>
-    <string name="singers">歌手</string>
+   <!--  <string name="singers">歌手</string> -->
     <string name="all_music_empty">还没有歌曲，去扫描吧</string>
     <string name="scan_music">歌曲扫描</string>
     <string name="scan_music_start">开始扫描歌曲</string>
     
     <string name="empty_song">没有歌曲</string>
+    <string name="empty_album">没有专辑</string>
+    <string name="empty_artist">没有歌手</string>
     <string name="accessibility_play">播放</string>
     <string name="accessibility_pause">暂停</string>
     <string name="accessibility_next">下一首</string>

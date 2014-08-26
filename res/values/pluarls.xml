@@ -8,14 +8,14 @@
 
     <!-- Used to indicate the number of albums for an artist -->
     <plurals name="Nalbums">
-        <item quantity="one"><xliff:g id="count">%d</xliff:g> 专辑</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> 专辑</item>
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> 张专辑</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 张专辑</item>
     </plurals>
     
     <!-- Used to indicate the number of songs for an album -->
     <plurals name="Nsongs">
-        <item quantity="one"><xliff:g id="count">%d</xliff:g> 歌曲</item>
-        <item quantity="other"><xliff:g id="count">%d</xliff:g> 歌曲</item>
+        <item quantity="one"><xliff:g id="count">%d</xliff:g> 首歌曲</item>
+        <item quantity="other"><xliff:g id="count">%d</xliff:g> 首歌曲</item>
     </plurals>
 
 </resources>

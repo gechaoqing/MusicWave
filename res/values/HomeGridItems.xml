@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="all_songs">全部歌曲</string>
+    <string name="icon_all_songs">a</string>
+    
+    <string name="play_list_mine">我的歌单</string>
+    <string name="icon_play_list_mine">m</string>
+    
+    <string name="singers">歌手</string>
+    <string name="icon_singers">o</string>
+    
+    <string name="recent_listen">最近听过</string>
+    <string name="icon_recent_listen">r</string>
+    
+    <string name="music_effect">音效</string>
+    <string name="icon_music_effect">e</string>
+    
+    <string name="scan_songs">扫描歌曲</string>
+    <string name="icon_scan_songs">c</string>
+    
+    <string name="setting">设置</string>
+    <string name="icon_setting">d</string>
+    
+    <string name="add_play_list">新建歌单</string>
+    <string name="icon_add_play_list">b</string>
+    
+    <string name="favourite_str">我的最爱</string>
+    <string name="icon_favourite">f</string>
+    
+    <string name="albums">专辑</string>
+    <string name="icon_albums">p</string>
+</resources>
