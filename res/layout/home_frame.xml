@@ -58,5 +58,5 @@
             android:layout_height="1px"
             android:background="#bbbbbb" />
 
-    <include layout="@layout/home_list_menu"/>
+   <!--  <include layout="@layout/home_list_menu"/> -->
 </LinearLayout>

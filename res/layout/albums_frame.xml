@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/home_title_singer"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@color/cyan_700"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/back_home"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:minWidth="50dp"
+            android:text="@string/icon_back_home"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="2dp"
+            android:text="@string/albums"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center"
+        android:padding="5dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+    <ListView
+         android:id="@+id/albums_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#bbbbbb"
+            android:fitsSystemWindows="true"
+            android:listSelector="@drawable/home_grid_menu_selector"
+            />
+
+</LinearLayout>
